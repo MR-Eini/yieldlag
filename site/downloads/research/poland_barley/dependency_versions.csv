@@ -1,0 +1,7 @@
+"Package","Version"
+"R","4.5.2"
+"mgcv","1.9.3"
+"ranger","0.18.0"
+"foreach","1.5.2"
+"leaps","3.2"
+"jsonlite","2.0.0"

@@ -219,5 +219,9 @@ no_ar <- do.call(rbind,lapply(names(results),function(n) {
 }))
 write.csv(no_ar,file.path(output,"ar_off_metrics.csv"),row.names=FALSE)
 writeLines(capture.output(sessionInfo()),file.path(output,"session_info.txt"))
+dependencies <- c("mgcv", "ranger", "foreach", "leaps", "jsonlite")
+write.csv(data.frame(Package=c("R",dependencies), Version=c(as.character(getRversion()),
+  vapply(dependencies,function(p) as.character(utils::packageVersion(p)),character(1)))),
+  file.path(output,"dependency_versions.csv"),row.names=FALSE)
 saveRDS(results,file.path(output,"study_results.rds"))
 cat("COMPLETE",case,"\n")
