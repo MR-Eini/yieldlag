@@ -5,6 +5,7 @@ and R tools::Rd2HTML rendering into outputs/website_reference.
 """
 from pathlib import Path
 import html
+import hashlib
 import json
 import re
 import shutil
@@ -21,12 +22,19 @@ NAV = [("Overview", "index.html"), ("Guide", "guide.html"), ("Models", "models.h
 
 def shell(title, body, active, prefix="", description="", scripts=()):
     navigation = ''.join(f'<a href="{prefix}{url}"'+(' class="active" aria-current="page"' if label == active else '')+f'>{label}</a>' for label, url in NAV)
+    def asset(path):
+        version = hashlib.sha256((SITE/path).read_bytes()).hexdigest()[:12]
+        return prefix+path+'?v='+version
+    script_tags = ''
+    for path in scripts:
+        data = f' data-results="{asset("assets/data/poland.json")}"' if path == 'assets/poland.js' else ''
+        script_tags += f'<script defer src="{asset(path)}"{data}></script>'
     return f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{ESC(title)} · YieldLag</title><meta name="description" content="{ESC(description or 'YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.')}">
 <meta name="theme-color" content="#21624d"><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="{prefix}assets/style.css"><script defer src="{prefix}assets/app.js"></script>
-{''.join(f'<script defer src="{prefix}{p}"></script>' for p in scripts)}</head><body>
+<link rel="stylesheet" href="{asset("assets/style.css")}"><script defer src="{asset("assets/app.js")}"></script>
+{script_tags}</head><body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap header-row"><a class="brand" href="{prefix}index.html">{LOGO}YieldLag<span class="version">0.2.0</span></a>
 <button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation">{navigation}<a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>

@@ -81,7 +81,7 @@ function updateCrop(next) {
   metrics();predictions();
 }
 
-fetch('assets/data/poland.json').then(response=>{
+fetch(document.querySelector('script[data-results]').dataset.results).then(response=>{
   if(!response.ok) throw new Error('Results could not be loaded');return response.json();
 }).then(data=>{
   runs=data;
