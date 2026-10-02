@@ -62,12 +62,12 @@ cy_default_grids <- function() {
 #' @param initial_fraction Fraction of observed years assigned to the initial
 #'   history before rolling hyperparameter tuning.
 #' @param tuning_fraction Fraction of observed years assigned to rolling
-#'   tuning and interval calibration. Remaining years form the later
+#'   tuning. Remaining years form optional calibration and later
 #'   evaluation block.
 #' @param grids Named list of hyperparameter grids. `NULL` uses the documented
 #'   package defaults.
 #' @param interval_level Coverage level for empirical prediction intervals.
-#'   Version 0.2.0 uses 0.80 so interval columns and diagnostics remain
+#'   Currently uses 0.80 so interval columns and diagnostics remain
 #'   unambiguous.
 #' @param robust Whether to use robust iteratively reweighted fitting where
 #'   supported.
@@ -75,6 +75,9 @@ cy_default_grids <- function() {
 #'   labels for compound hot-dry terms in `stress_lag`. Specify both or neither.
 #'   Matching calendar months and seasonal positions are required. Thresholds
 #'   are standardized anomalies, not physiological temperature thresholds.
+#' @param calibration_years Number of years reserved after tuning and before
+#'   evaluation for interval calibration. Zero preserves tuning-error calibration.
+#'   A positive value separates interval calibration from parameter/method selection.
 #'
 #' @return An object of class `crop_model_config`.
 #' @export
@@ -87,7 +90,13 @@ crop_model_config <- function(
     tuning_fraction = 0.30,
     grids = NULL,
     interval_level = 0.80,
-    robust = TRUE, stress_temperature = NULL, stress_precipitation = NULL) {
+    robust = TRUE, stress_temperature = NULL, stress_precipitation = NULL,
+    calibration_years = 0L) {
+  if (!is.numeric(calibration_years) || length(calibration_years) != 1L ||
+      !is.finite(calibration_years) || calibration_years < 0 ||
+      calibration_years != as.integer(calibration_years)) {
+    stop("calibration_years must be one non-negative integer.", call. = FALSE)
+  }
   methods <- unique(as.character(methods))
   unknown <- setdiff(methods, crop_model_methods())
   if (!length(methods)) stop("At least one method is required.", call. = FALSE)
@@ -112,7 +121,7 @@ crop_model_config <- function(
   }
   if (!is.numeric(interval_level) || length(interval_level) != 1L ||
       !is.finite(interval_level) || !isTRUE(all.equal(as.numeric(interval_level), 0.80))) {
-    stop("Version 0.2.0 supports interval_level = 0.80.", call. = FALSE)
+    stop("This version supports interval_level = 0.80 only.", call. = FALSE)
   }
   if (is.null(grids)) grids <- cy_default_grids()
   cy_validate_stress_pair(stress_temperature, stress_precipitation)
@@ -145,7 +154,8 @@ crop_model_config <- function(
     interval_level = as.numeric(interval_level),
     robust = isTRUE(robust),
     stress_temperature = stress_temperature,
-    stress_precipitation = stress_precipitation
+    stress_precipitation = stress_precipitation,
+    calibration_years = as.integer(calibration_years)
   ), class = "crop_model_config")
 }
 

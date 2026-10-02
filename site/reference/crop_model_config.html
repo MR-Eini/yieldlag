@@ -5,8 +5,8 @@
 <link rel="stylesheet" href="../assets/style.css?v=7eabfc71cfe6"><script defer src="../assets/app.js?v=c36d7c7d931b"></script>
 </head><body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="wrap header-row"><a class="brand" href="../index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.2.0</span></a>
-<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="../index.html">Overview</a><a href="../guide.html">Guide</a><a href="../models.html">Models</a><a href="../poland.html">Poland example</a><a href="../reference/index.html" class="active" aria-current="page">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="../index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.3.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="../index.html">Overview</a><a href="../guide.html">Guide</a><a href="../models.html">Models</a><a href="../poland.html">Poland example</a><a href="../research.html">Research</a><a href="../reference/index.html" class="active" aria-current="page">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
 <main id="main"><div class="wrap content-layout"><aside class="toc"><a href="index.html">← All reference topics</a><a href="../guide.html">User guide</a><a href="../models.html">Model specification</a></aside><article class="prose reference-body">
 
 
@@ -30,7 +30,8 @@
   interval_level = 0.8,
   robust = TRUE,
   stress_temperature = NULL,
-  stress_precipitation = NULL
+  stress_precipitation = NULL,
+  calibration_years = 0L
 )
 </code></pre>
 
@@ -57,7 +58,7 @@ history before rolling hyperparameter tuning.</p>
 <tr><td><code id="tuning_fraction">tuning_fraction</code></td>
 <td>
 <p>Fraction of observed years assigned to rolling
-tuning and interval calibration. Remaining years form the later
+tuning. Remaining years form optional calibration and later
 evaluation block.</p>
 </td></tr>
 <tr><td><code id="grids">grids</code></td>
@@ -68,7 +69,7 @@ package defaults.</p>
 <tr><td><code id="interval_level">interval_level</code></td>
 <td>
 <p>Coverage level for empirical prediction intervals.
-Version 0.2.0 uses 0.80 so interval columns and diagnostics remain
+Currently uses 0.80 so interval columns and diagnostics remain
 unambiguous.</p>
 </td></tr>
 <tr><td><code id="robust">robust</code></td>
@@ -82,6 +83,12 @@ supported.</p>
 labels for compound hot-dry terms in 'stress_lag'. Specify both or neither.
 Matching calendar months and seasonal positions are required. Thresholds
 are standardized anomalies, not physiological temperature thresholds.</p>
+</td></tr>
+<tr><td><code id="calibration_years">calibration_years</code></td>
+<td>
+<p>Number of years reserved after tuning and before
+evaluation for interval calibration. Zero preserves tuning-error calibration.
+A positive value separates interval calibration from parameter/method selection.</p>
 </td></tr>
 </table>
 
@@ -97,4 +104,4 @@ are standardized anomalies, not physiological temperature thresholds.</p>
 <pre><code class='language-R'>crop_model_config(methods = c("trend", "hierarchical"))
 </code></pre>
 
-<hr><div style="text-align: center;">[Package <em>yieldlag</em> version 0.2.0 ]</div></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="../citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>
+<hr><div style="text-align: center;">[Package <em>yieldlag</em> version 0.3.0 ]</div></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.3.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="../citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

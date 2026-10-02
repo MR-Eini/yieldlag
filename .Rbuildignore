@@ -9,6 +9,8 @@
 ^site$
 ^scripts$
 ^analysis$
+^research$
+^\.zenodo\.json$
 ^run\.ps1$
 ^reproduce\.ps1$
 ^VERSION$

@@ -1,3 +1,14 @@
+# YieldLag 0.3.0
+
+- Added a separate chronological calibration block through `calibration_years`.
+- Added `compare_crop_errors()` for paired year-block uncertainty intervals.
+- Added controlled stress-basis and regional-effect ablations.
+- Added reproducible Poland/Germany comparisons, external GAM/forest baselines,
+  spatial holdouts, upstream ABSOLUT comparisons, and calibration diagnostics.
+- Retained version 0.2.0 predictions and the original Poland explorer as a
+  separately specified reference experiment.
+- Handled constant-response correlations without emitting numerical warnings.
+
 # YieldLag 0.2.0
 
 - Added `stress_lag`: regional seasonal climatology, asymmetric anomaly terms,

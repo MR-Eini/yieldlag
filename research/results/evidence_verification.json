@@ -1,0 +1,12 @@
+{
+  "cases": [
+    "poland_wheat",
+    "poland_barley",
+    "germany_wheat",
+    "germany_barley"
+  ],
+  "metrics_recomputed": 64,
+  "figures": 6,
+  "year_leakage_checks": "all TrainEnd < Year",
+  "package_version": "0.3.0"
+}

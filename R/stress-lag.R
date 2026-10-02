@@ -35,7 +35,8 @@ cy_stress_anomalies <- function(climatology, data) {
 }
 
 cy_stress_basis <- function(data, manifest, climatology, threshold,
-    temperature_variable = NULL, precipitation_variable = NULL) {
+    temperature_variable = NULL, precipitation_variable = NULL,
+    components = c("linear", "upper_tail", "lower_tail", "compound_hot_dry")) {
   z <- cy_stress_anomalies(climatology, data)
   features <- cbind(z, pmax(z - threshold, 0), pmax(-z - threshold, 0))
   blocks <- lapply(c("linear", "upper_tail", "lower_tail"), function(component) {
@@ -47,7 +48,7 @@ cy_stress_basis <- function(data, manifest, climatology, threshold,
     part
   })
   feature_manifest <- do.call(rbind, blocks)
-  if (!is.null(temperature_variable)) {
+  if (!is.null(temperature_variable) && "compound_hot_dry" %in% components) {
     temperature <- manifest[manifest$Variable == temperature_variable, , drop = FALSE]
     precipitation <- manifest[manifest$Variable == precipitation_variable, , drop = FALSE]
     if (!nrow(temperature) || !nrow(precipitation)) {
@@ -73,6 +74,9 @@ cy_stress_basis <- function(data, manifest, climatology, threshold,
     features <- cbind(features, compound)
   }
   colnames(features) <- feature_manifest$Term
+  keep <- feature_manifest$Component %in% components
+  features <- features[, keep, drop = FALSE]
+  feature_manifest <- feature_manifest[keep, , drop = FALSE]
   panel <- data[, intersect(c("RS", "Year", ".yield"), names(data)), drop = FALSE]
   for (term in colnames(features)) panel[[term]] <- features[, term]
   rownames(feature_manifest) <- NULL
@@ -81,7 +85,17 @@ cy_stress_basis <- function(data, manifest, climatology, threshold,
 
 cy_fit_stress_lag <- function(data, manifest, lambda = 100, smooth_ratio = 10,
     threshold = 0.75, temperature_variable = NULL, precipitation_variable = NULL,
-    robust = TRUE) {
+    robust = TRUE, components = NULL, regional_effects = NULL) {
+  if (is.null(components)) components <- c("linear", "upper_tail", "lower_tail", "compound_hot_dry")
+  if (is.null(regional_effects)) regional_effects <- TRUE
+  allowed <- c("linear", "upper_tail", "lower_tail", "compound_hot_dry")
+  if (!is.character(components) || !length(components) || anyNA(components) ||
+      any(!components %in% allowed) || !"linear" %in% components) {
+    stop("Stress components must include linear and use documented component names.", call. = FALSE)
+  }
+  if (!is.logical(regional_effects) || length(regional_effects) != 1L || is.na(regional_effects)) {
+    stop("regional_effects must be TRUE or FALSE.", call. = FALSE)
+  }
   if (is.null(lambda)) lambda <- 100
   if (is.null(smooth_ratio)) smooth_ratio <- 10
   if (is.null(threshold)) threshold <- 0.75
@@ -94,23 +108,26 @@ cy_fit_stress_lag <- function(data, manifest, lambda = 100, smooth_ratio = 10,
   cy_validate_stress_pair(temperature_variable, precipitation_variable)
   climatology <- cy_fit_stress_climatology(data, manifest)
   basis <- cy_stress_basis(data, manifest, climatology, threshold,
-    temperature_variable, precipitation_variable)
+    temperature_variable, precipitation_variable, components)
   engine <- cy_fit_panel_ridge(data = basis$panel, manifest = basis$manifest,
-    lambda = lambda, smooth_ratio = smooth_ratio, robust = robust)
+    lambda = lambda, smooth_ratio = smooth_ratio, robust = robust,
+    regional_effects = regional_effects)
   engine$method <- "stress_lag"
   engine$climatology <- climatology
   engine$source_manifest <- manifest
   engine$stress_feature_manifest <- basis$manifest
   engine$params <- list(lambda = lambda, smooth_ratio = smooth_ratio,
     threshold = threshold, temperature_variable = temperature_variable,
-    precipitation_variable = precipitation_variable)
+    precipitation_variable = precipitation_variable, components = components,
+    regional_effects = regional_effects)
   engine
 }
 
 cy_stress_prediction_basis <- function(engine, data) {
   cy_stress_basis(data, engine$source_manifest, engine$climatology,
     engine$params$threshold, engine$params$temperature_variable,
-    engine$params$precipitation_variable)
+    engine$params$precipitation_variable,
+    if (is.null(engine$params$components)) c("linear", "upper_tail", "lower_tail", "compound_hot_dry") else engine$params$components)
 }
 
 cy_predict_stress_lag <- function(engine, data, use_ar = TRUE) {
@@ -144,6 +161,7 @@ explain_crop_prediction <- function(object, newdata, use_ar = TRUE) {
   basis <- cy_stress_prediction_basis(engine, panel)
   transformed <- cy_transform(engine$preprocessor, basis$panel)
   regional <- cy_region_columns(panel$RS, transformed$year, engine$regions)
+  regional <- regional[, intersect(colnames(regional), names(engine$coef)), drop = FALSE]
   weather <- sweep(transformed$x, 2L, engine$coef[colnames(transformed$x)], "*")
   component <- function(label) {
     terms <- engine$stress_feature_manifest$Term[

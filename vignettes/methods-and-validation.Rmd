@@ -39,8 +39,9 @@ bounded pooled AR(1) correction based only on preceding residuals.
 Years are split chronologically into:
 
 1. initial history;
-2. rolling-origin tuning and interval calibration;
-3. later rolling-origin evaluation.
+2. rolling-origin tuning;
+3. an optional separate calibration block;
+4. later rolling-origin evaluation.
 
 For a prediction in year $t$, scaling, decomposition, fitting, and residual
 correction use yields strictly before $t$. Hyperparameters are chosen on the
@@ -48,8 +49,9 @@ tuning block. Ensemble shrinkage is chosen by holding out one complete tuning
 year at a time. Automatic method selection minimizes province-year tuning
 RMSE; later evaluation is not used for selection.
 
-The 80% province interval is the 80th percentile of absolute tuning errors.
-National intervals are recalibrated from national tuning errors because
+The 80% province interval is the 80th percentile of absolute calibration errors
+when `calibration_years > 0`; the default of zero reuses tuning errors.
+National intervals use errors from the same calibration phase because
 averaging province intervals would ignore spatial correlation.
 
 ## Interpretation limits
@@ -60,9 +62,10 @@ negative and should not be replaced by squared correlation. Once an evaluation
 block has influenced development, a new later or external dataset is required
 for a confirmatory claim.
 
-The package exposes all row-level predictions so users can add blocked
-bootstrap uncertainty, spatial holdouts, and crop-specific diagnostics rather
-than relying only on aggregate scores.
+`compare_crop_errors()` compares paired RMSE using consecutive year blocks,
+retaining all regions in each sampled year. Short evaluation records still
+limit precision. Spatial holdouts and crop-specific diagnostics complement
+these comparisons.
 
 ## Nonlinear seasonal response
 

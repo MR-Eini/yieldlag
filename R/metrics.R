@@ -12,7 +12,8 @@ cy_metrics <- function(observed, predicted) {
   }
   error <- predicted - observed
   sst <- sum((observed - mean(observed))^2)
-  correlation <- if (length(observed) > 1L) cor(observed, predicted) else NA_real_
+  correlation <- if (length(observed) > 1L && sd(observed) > 0 && sd(predicted) > 0)
+    cor(observed, predicted) else NA_real_
   data.frame(
     N = length(observed),
     RMSE = sqrt(mean(error^2)),
@@ -33,7 +34,8 @@ cy_add_interval_metrics <- function(metrics, predictions) {
   metrics
 }
 
-cy_split_years <- function(training_years, initial_fraction, tuning_fraction) {
+cy_split_years <- function(training_years, initial_fraction, tuning_fraction,
+    calibration_years = 0L) {
   years <- sort(unique(training_years))
   initial_count <- max(6L, floor(initial_fraction * length(years)))
   tuning_count <- max(4L, floor(tuning_fraction * length(years)))
@@ -42,10 +44,16 @@ cy_split_years <- function(training_years, initial_fraction, tuning_fraction) {
     stop("The configured split must leave at least four tuning years and two evaluation years.",
       call. = FALSE)
   }
+  if (tuning_end + calibration_years > length(years) - 2L) {
+    stop("The configured calibration block must leave at least two evaluation years.",
+      call. = FALSE)
+  }
   list(
     initial = years[seq_len(initial_count)],
     tuning = years[(initial_count + 1L):tuning_end],
-    evaluation = years[(tuning_end + 1L):length(years)]
+    calibration = if (calibration_years > 0L)
+      years[tuning_end + seq_len(calibration_years)] else integer(),
+    evaluation = years[(tuning_end + calibration_years + 1L):length(years)]
   )
 }
 

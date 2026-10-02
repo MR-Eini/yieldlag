@@ -20,3 +20,11 @@ release-assets/
 .release-check/
 __pycache__/
 *.pyc
+research/external/raw/
+research/external/absolut/
+research/external/absolut-runs/
+research/results/*.rds
+research/results/*.log
+research/results/**/*.rds
+research/results/**/*.log
+research/manuscript/qa/

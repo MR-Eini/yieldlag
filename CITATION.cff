@@ -6,10 +6,10 @@ authors:
   - family-names: "Eini"
     given-names: "Mohammad Reza"
     alias: "MR-Eini"
-version: "0.2.0"
+version: "0.3.0"
 date-released: "2026-10-02"
 repository-code: "https://github.com/MR-Eini/yieldlag"
-url: "https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0"
+url: "https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0"
 license: MIT
 keywords:
   - crop yield

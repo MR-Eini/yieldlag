@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>compare_crop_errors · YieldLag</title><meta name="description" content="YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.">
+<meta name="theme-color" content="#21624d"><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css?v=7eabfc71cfe6"><script defer src="../assets/app.js?v=c36d7c7d931b"></script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="../index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.3.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="../index.html">Overview</a><a href="../guide.html">Guide</a><a href="../models.html">Models</a><a href="../poland.html">Poland example</a><a href="../research.html">Research</a><a href="../reference/index.html" class="active" aria-current="page">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<main id="main"><div class="wrap content-layout"><aside class="toc"><a href="index.html">← All reference topics</a><a href="../guide.html">User guide</a><a href="../models.html">Model specification</a></aside><article class="prose reference-body">
+
+
+
+<h1 style="font-size:2.8rem">Compare paired prediction errors with a year-block bootstrap</h1>
+
+<h3>Description</h3>
+
+<p>Resamples consecutive circular blocks of years, retaining all regions in
+each sampled year. The interval describes uncertainty in a paired RMSE
+difference on the supplied evaluation period; it is not a guarantee under
+nonstationarity. Few observed years give weak uncertainty estimates.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>compare_crop_errors(
+  predictions,
+  reference,
+  repetitions = 2000L,
+  block_length = 2L,
+  confidence = 0.95,
+  seed = 2718L
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table role = "presentation">
+<tr><td><code id="predictions">predictions</code></td>
+<td>
+<p>Data frame with 'Method', 'RS', 'Year', 'Observed',
+and 'Predicted'. Each method must have the same region/year observations.</p>
+</td></tr>
+<tr><td><code id="reference">reference</code></td>
+<td>
+<p>Reference method name.</p>
+</td></tr>
+<tr><td><code id="repetitions">repetitions</code></td>
+<td>
+<p>Number of bootstrap resamples, at least 100.</p>
+</td></tr>
+<tr><td><code id="block_length">block_length</code></td>
+<td>
+<p>Number of consecutive years per block.</p>
+</td></tr>
+<tr><td><code id="confidence">confidence</code></td>
+<td>
+<p>Confidence level between zero and one.</p>
+</td></tr>
+<tr><td><code id="seed">seed</code></td>
+<td>
+<p>Integer random seed; the caller's random state is preserved.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A data frame with paired RMSE differences (method minus reference),
+percentile limits, observation/year counts, and bootstrap settings.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>p &lt;- expand.grid(RS = c("A", "B"), Year = 2001:2008,
+                 Method = c("reference", "alternative"))
+p$Observed &lt;- 10 + p$Year - 2000
+p$Predicted &lt;- p$Observed + ifelse(p$Method == "reference", 2, 1)
+compare_crop_errors(p, "reference", repetitions = 100)
+</code></pre>
+
+<hr><div style="text-align: center;">[Package <em>yieldlag</em> version 0.3.0 ]</div></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.3.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="../citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

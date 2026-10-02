@@ -18,7 +18,7 @@ DATA = json.loads((SITE / "assets/data/poland.json").read_text(encoding="utf-8")
 ESC = html.escape
 LOGO = '<svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
 NAV = [("Overview", "index.html"), ("Guide", "guide.html"), ("Models", "models.html"),
-       ("Poland example", "poland.html"), ("Reference", "reference/index.html")]
+       ("Poland example", "poland.html"), ("Research", "research.html"), ("Reference", "reference/index.html")]
 
 def shell(title, body, active, prefix="", description="", scripts=()):
     navigation = ''.join(f'<a href="{prefix}{url}"'+(' class="active" aria-current="page"' if label == active else '')+f'>{label}</a>' for label, url in NAV)
@@ -36,9 +36,9 @@ def shell(title, body, active, prefix="", description="", scripts=()):
 <link rel="stylesheet" href="{asset("assets/style.css")}"><script defer src="{asset("assets/app.js")}"></script>
 {script_tags}</head><body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="wrap header-row"><a class="brand" href="{prefix}index.html">{LOGO}YieldLag<span class="version">0.2.0</span></a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="{prefix}index.html">{LOGO}YieldLag<span class="version">0.3.0</span></a>
 <button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation">{navigation}<a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
-<main id="main">{body}</main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="{prefix}citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>'''
+<main id="main">{body}</main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.3.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="{prefix}citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>'''
 
 def write(name, content):
     p = SITE / name
@@ -75,7 +75,7 @@ def build():
 <section class="rule-section"><div class="wrap"><div class="section-head"><h2>From weather panels<br>to interpretable results.</h2><p>A complete statistical workflow: data preparation, model tuning, rolling evaluation, fitting, prediction, and result export.</p></div><div class="grid"><article class="card"><span class="number">01</span><h3>Respect time</h3><p>Preprocessing and coefficients use earlier years at every forecast origin. Tune on an earlier block, then evaluate the procedure on later years.</p></article><article class="card"><span class="number">02</span><h3>Represent seasonal response</h3><p>Compare pooled and regional effects, smooth monthly coefficients, asymmetric weather anomalies, and compound hot–dry interactions.</p></article><article class="card"><span class="number">03</span><h3>Inspect the prediction</h3><p>Break a stress-lag prediction into additive components. Diagnose weather extrapolation, empirical intervals, and regional errors.</p></article></div></div></section>
 <section class="rule-section"><div class="wrap split"><div><span class="eyebrow">A compact R interface</span><h2 style="margin-top:15px">Start with a panel.<br>Keep the evidence.</h2><p>Use bundled inputs or provide your own region/year panel. A comparison object retains tuning candidates, selected settings, row-level predictions, model objects, and diagnostics.</p><a href="reference/index.html">Explore the function reference →</a></div><div><pre><code>install.packages("remotes")
 remotes::install_github("MR-Eini/yieldlag",
-                        ref = "v0.2.0")
+                        ref = "v0.3.0")
 library(yieldlag)
 
 data &lt;- read_crop_data(
@@ -97,12 +97,12 @@ The model engine uses R's standard libraries. R 4.2 or later is required.
 
 ```r
 install.packages("remotes")
-remotes::install_github("MR-Eini/yieldlag", ref = "v0.2.0",
+remotes::install_github("MR-Eini/yieldlag", ref = "v0.3.0",
                         build_vignettes = FALSE)
 library(yieldlag)
 ```
 
-Alternatively, download `yieldlag_0.2.0.tar.gz` from [the release](https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0) and use `install.packages(path, repos = NULL, type = "source")`. The release archive includes rendered tutorials. The package name is `yieldlag`.
+Alternatively, download `yieldlag_0.3.0.tar.gz` from [the release](https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0) and use `install.packages(path, repos = NULL, type = "source")`. The release archive includes rendered tutorials. The package name is `yieldlag`.
 
 ## Prepare data {#data}
 
@@ -266,7 +266,7 @@ config &lt;- crop_model_config(
         content += f'<div class="actions"><a class="button" href="downloads/{crop}-results.zip">Download complete tables</a><a class="button secondary" href="poland.html">Interactive explorer</a></div><p class="small" style="margin:25px 0">Retrospective benchmark; fixed area weights and complete seasonal weather. National evaluation contains seven annual observations.</p></div>'
         write(crop+'.html', shell('Poland · '+crop.title(),content,'Poland example'))
 
-    citation = '<h2 id="software">Cite the software</h2><p>Maintainer and author: <strong>Mohammad Reza Eini</strong>. Use <code>citation("yieldlag")</code> in R.</p><p>Eini, M. R. (2026). <em>YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling</em>. R package version 0.2.0. <a href="https://github.com/MR-Eini/yieldlag">GitHub repository</a>.</p><h2 id="study">Study context</h2><p>The Poland data setting is described by Eini, Conradt, and Piniewski (2026), <em>Theoretical and Applied Climatology</em>, <a href="https://doi.org/10.1007/s00704-026-06322-8">doi:10.1007/s00704-026-06322-8</a>. Website results are newly computed with YieldLag 0.2.0 and its documented comparison procedure; they are not a claim to reproduce the paper’s historical metrics.</p><h2 id="data">Data specification</h2>'
+    citation = '<h2 id="software">Cite the software</h2><p>Maintainer and author: <strong>Mohammad Reza Eini</strong>. Use <code>citation("yieldlag")</code> in R.</p><p>Eini, M. R. (2026). <em>YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling</em>. R package version 0.3.0. <a href="https://github.com/MR-Eini/yieldlag">GitHub repository</a>.</p><h2 id="study">Study context</h2><p>The Poland data setting is described by Eini, Conradt, and Piniewski (2026), <em>Theoretical and Applied Climatology</em>, <a href="https://doi.org/10.1007/s00704-026-06322-8">doi:10.1007/s00704-026-06322-8</a>. Website results are newly computed with YieldLag 0.2.0 and its documented comparison procedure; they are not a claim to reproduce the paper’s historical metrics.</p><h2 id="data">Data specification</h2>'
     data = (ROOT/'docs/DATA.md').read_text(encoding='utf-8')
     data = data[data.index('## Poland example'):].replace('## ','### ')
     data = data[:data.index('[Data attribution]')]
@@ -288,7 +288,7 @@ config &lt;- crop_model_config(
         topics.append((source.stem,title))
         content = '<div class="wrap content-layout"><aside class="toc"><a href="index.html">← All reference topics</a><a href="../guide.html">User guide</a><a href="../models.html">Model specification</a></aside><article class="prose reference-body">'+main+'</article></div>'
         write('reference/'+source.name, shell(source.stem, content, 'Reference', prefix='../'))
-    reference = hero('Function-level documentation', 'The R reference.', 'Arguments, return values, and examples generated from the help files shipped with YieldLag 0.2.0.')
+    reference = hero('Function-level documentation', 'The R reference.', 'Arguments, return values, and examples generated from the help files shipped with YieldLag 0.3.0.')
     reference += '<div class="wrap" style="padding-bottom:70px"><label for="api-search" class="eyebrow">Find a function or topic</label><input id="api-search" type="search" placeholder="Search predictions, data, models…" style="width:min(600px,100%);margin-top:12px"><span id="api-count" class="small" role="status" style="display:block;margin:10px 0">'+str(len(topics))+' topics</span><div class="api-list">'
     reference += ''.join(f'<article class="api-item"><a href="{name}.html">{name}</a><p>{title}</p></article>' for name,title in topics)
     reference += '</div></div>'

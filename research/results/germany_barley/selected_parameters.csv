@@ -1,0 +1,14 @@
+"Method","Parameters","Seconds","Candidates","Fits"
+"trend","none",6.91,1,18
+"persistence","none",2.17,1,18
+"panel_ridge","lambda=10;smooth_ratio=100",69.5,12,62
+"local_ridge","lambda=10000;smooth_ratio=100",6.22000000000001,12,62
+"pcr","components=5",45.83,5,34
+"hierarchical","lambda_global=1000;lambda_region=3000;smooth_ratio=10",19.13,12,62
+"stress_lag","lambda=10;smooth_ratio=10;threshold=0.75;temperature_variable=MAX;precipitation_variable=PCP",82.87,12,62
+"anomaly_linear","lambda=100;smooth_ratio=100;threshold=0.75;temperature_variable=MAX;precipitation_variable=PCP;components=linear;regional_effects=TRUE",67.99,12,62
+"anomaly_tails","lambda=1000;smooth_ratio=10;threshold=0.75;temperature_variable=MAX;precipitation_variable=PCP;components=linear,upper_tail,lower_tail;regional_effects=TRUE",81.92,12,62
+"stress_unsmoothed","lambda=10000;smooth_ratio=0;threshold=0.75;temperature_variable=MAX;precipitation_variable=PCP;components=linear,upper_tail,lower_tail,compound_hot_dry;regional_effects=TRUE",55.62,4,30
+"stress_no_region","lambda=10000;smooth_ratio=0;threshold=0.75;temperature_variable=MAX;precipitation_variable=PCP;components=linear,upper_tail,lower_tail,compound_hot_dry;regional_effects=FALSE",7.69,12,62
+"gam","gamma=2",51.28,3,26
+"random_forest","mtry=16;node=15",218.58,9,50

@@ -95,13 +95,14 @@ cy_predict_persistence <- function(model, new_data, use_ar = TRUE) {
 
 cy_fit_panel_ridge <- function(
     data, manifest, lambda, smooth_ratio, robust = TRUE,
-    robust_iterations = 6L) {
+    robust_iterations = 6L, regional_effects = TRUE) {
   feature_names <- manifest$Term
   preprocessor <- cy_fit_preprocessor(data, feature_names)
   transformed <- cy_transform(preprocessor, data)
   regions <- as.character(data$RS)
   region_levels <- sort(unique(regions))
-  region_design <- cy_region_columns(regions, transformed$year, region_levels)
+  region_design <- if (isTRUE(regional_effects))
+    cy_region_columns(regions, transformed$year, region_levels) else matrix(numeric(), nrow(data), 0)
   design <- cbind(year = transformed$year, transformed$x, region_design)
   penalty <- cy_make_weather_penalty(
     colnames(design), manifest, lambda, smooth_ratio,
@@ -411,7 +412,8 @@ cy_fit_model <- function(method, data, manifest, params = list(), robust = TRUE)
     ),
     stress_lag = cy_fit_stress_lag(
       data, manifest, params$lambda, params$smooth_ratio, params$threshold,
-      params$temperature_variable, params$precipitation_variable, robust
+      params$temperature_variable, params$precipitation_variable, robust,
+      components = params$components, regional_effects = params$regional_effects
     ),
     stop("Unknown method: ", method, call. = FALSE)
   )

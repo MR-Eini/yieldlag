@@ -1,0 +1,17 @@
+[
+  {
+    "case": "poland_wheat",
+    "origin": 2016,
+    "output": "research/external/absolut-runs/poland_wheat-2016/absolut-412-output.dat"
+  },
+  {
+    "case": "poland_wheat",
+    "origin": 2017,
+    "output": "research/external/absolut-runs/poland_wheat-2017/absolut-412-output.dat"
+  },
+  {
+    "case": "poland_wheat",
+    "origin": 2018,
+    "output": "research/external/absolut-runs/poland_wheat-2018/absolut-412-output.dat"
+  }
+]

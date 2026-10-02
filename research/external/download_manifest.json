@@ -1,0 +1,26 @@
+[
+  {
+    "file": "districtweather.zip",
+    "sha256": "c7d61a03ca30f8c2d4d46fd5708e7763068d9fec91659e6fabbb60fabc8bed3a",
+    "source_checksum": "md5:3ef52065c1eddcaacd2689a74d879679",
+    "url": "https://zenodo.org/api/records/4468691/files/districtweather.zip/content"
+  },
+  {
+    "file": "absolutcontrol.dat",
+    "sha256": "de859a9251f5f1b233b348c6ad7b611efca17d21c5308e9c11ff7ff4989dd849",
+    "source_checksum": "md5:9b80afe8700091a3c10dc1df9682fc45",
+    "url": "https://zenodo.org/api/records/4468691/files/absolutcontrol.dat/content"
+  },
+  {
+    "file": "yield-indat.csv",
+    "sha256": "581f1aa8ea68478fca09f97dd51c649f99031645e5ba08cd6ae2690f92ce9a6d",
+    "source_checksum": "md5:59dfbbed9541525504a0b9c427426cec",
+    "url": "https://zenodo.org/api/records/4468691/files/yield-indat.csv/content"
+  },
+  {
+    "file": "crop-areas.csv",
+    "sha256": "cf947fe98a845fe5d7b0eacb1177a5b5cb46716f641afe195f8a3f115867afb1",
+    "source_checksum": "md5:a1ee89db3b48151caa975a462a8f100c",
+    "url": "https://zenodo.org/api/records/4468691/files/crop-areas.csv/content"
+  }
+]

@@ -13,7 +13,8 @@ crop_model_config(
   interval_level = 0.8,
   robust = TRUE,
   stress_temperature = NULL,
-  stress_precipitation = NULL
+  stress_precipitation = NULL,
+  calibration_years = 0L
 )
 }
 \arguments{
@@ -28,14 +29,14 @@ read. Drought indices are not included by default.}
 history before rolling hyperparameter tuning.}
 
 \item{tuning_fraction}{Fraction of observed years assigned to rolling
-tuning and interval calibration. Remaining years form the later
+tuning. Remaining years form optional calibration and later
 evaluation block.}
 
 \item{grids}{Named list of hyperparameter grids. `NULL` uses the documented
 package defaults.}
 
 \item{interval_level}{Coverage level for empirical prediction intervals.
-Version 0.2.0 uses 0.80 so interval columns and diagnostics remain
+Currently uses 0.80 so interval columns and diagnostics remain
 unambiguous.}
 
 \item{robust}{Whether to use robust iteratively reweighted fitting where
@@ -45,6 +46,10 @@ supported.}
 labels for compound hot-dry terms in `stress_lag`. Specify both or neither.
 Matching calendar months and seasonal positions are required. Thresholds
 are standardized anomalies, not physiological temperature thresholds.}
+
+\item{calibration_years}{Number of years reserved after tuning and before
+evaluation for interval calibration. Zero preserves tuning-error calibration.
+A positive value separates interval calibration from parameter/method selection.}
 }
 \value{
 An object of class `crop_model_config`.

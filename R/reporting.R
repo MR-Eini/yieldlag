@@ -12,7 +12,8 @@ cy_compile_results <- function(results, areas, national_yields) {
 
   # Province errors are spatially correlated, so averaging provincial
   # intervals does not produce a calibrated national interval. Calibrate one
-  # national half-width per method using only the earlier tuning forecasts.
+  # national half-width using the separate calibration forecasts when present,
+  # otherwise the earlier tuning forecasts.
   national_cv$ProvinceAggregatedLower80 <- national_cv$Lower80Weighted
   national_cv$ProvinceAggregatedUpper80 <- national_cv$Upper80Weighted
   national_final$ProvinceAggregatedLower80 <- national_final$Lower80Weighted
@@ -20,7 +21,9 @@ cy_compile_results <- function(results, areas, national_yields) {
   national_cv$NationalHalfWidth80 <- NA_real_
   national_final$NationalHalfWidth80 <- NA_real_
   for (method in names(results)) {
-    tuning_index <- national_cv$Method == method & national_cv$Phase == "tuning"
+    calibration_phase <- if (any(national_cv$Method == method &
+        national_cv$Phase == "calibration")) "calibration" else "tuning"
+    tuning_index <- national_cv$Method == method & national_cv$Phase == calibration_phase
     tuning_observed <- cy_national_observed(national_cv[tuning_index, , drop = FALSE])
     half_width <- cy_empirical_half_width(
       tuning_observed, national_cv$PredictedWeighted[tuning_index]

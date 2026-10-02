@@ -2,7 +2,8 @@
 
 cy_params_string <- function(params) {
   if (!length(params)) return("none")
-  paste(paste(names(params), unlist(params), sep = "="), collapse = ";")
+  values <- vapply(params, function(x) paste(x, collapse = ","), character(1))
+  paste(paste(names(params), values, sep = "="), collapse = ";")
 }
 
 cy_empirical_half_width <- function(observed, predicted, level = 0.80) {
@@ -89,17 +90,25 @@ cy_run_base_method <- function(
     data, manifest, year_split$tuning, method, params,
     robust = isTRUE(config$robust), verbose = FALSE
   )
+  calibration_prediction <- if (length(year_split$calibration)) cy_rolling_method(
+    data, manifest, year_split$calibration, method, params,
+    robust = isTRUE(config$robust), verbose = FALSE
+  ) else tuning_prediction[FALSE, , drop = FALSE]
+  calibration <- if (nrow(calibration_prediction)) calibration_prediction else tuning_prediction
   predictive_sigma <- sqrt(mean(
-    (tuning_prediction$Predicted - tuning_prediction$Observed)^2,
+    (calibration$Predicted - calibration$Observed)^2,
     na.rm = TRUE
   ))
   interval_half_width <- cy_empirical_half_width(
-    tuning_prediction$Observed, tuning_prediction$Predicted,
+    calibration$Observed, calibration$Predicted,
     level = config$interval_level
   )
   tuning_prediction$Lower80 <- tuning_prediction$Predicted - interval_half_width
   tuning_prediction$Upper80 <- tuning_prediction$Predicted + interval_half_width
   tuning_prediction$Phase <- "tuning"
+  calibration_prediction$Lower80 <- calibration_prediction$Predicted - interval_half_width
+  calibration_prediction$Upper80 <- calibration_prediction$Predicted + interval_half_width
+  calibration_prediction$Phase <- rep("calibration", nrow(calibration_prediction))
 
   if (verbose) message("  evaluating ", method)
   evaluation_prediction <- cy_rolling_method(
@@ -131,8 +140,9 @@ cy_run_base_method <- function(
     selected_params = params,
     tuning_table = tuning$table,
     tuning_predictions = tuning_prediction,
+    calibration_predictions = calibration_prediction,
     evaluation_predictions = evaluation_prediction,
-    cv_predictions = rbind(tuning_prediction, evaluation_prediction),
+    cv_predictions = rbind(tuning_prediction, calibration_prediction, evaluation_prediction),
     predictive_sigma = predictive_sigma,
     interval_half_width_80 = interval_half_width,
     final_model = final_model,
@@ -195,9 +205,13 @@ cy_build_ensemble <- function(base_results, config) {
     tuning$matrix, tuning$keys$Observed,
     shrinkage = selected_shrinkage, prior = prior
   )
-  predictive_sigma <- sqrt(mean((tuning_predicted - tuning$keys$Observed)^2))
+  calibration <- cy_aligned_prediction_matrix(base_results, "calibration_predictions")
+  calibration_predicted <- as.numeric(calibration$matrix %*% weights)
+  interval_observed <- if (length(calibration_predicted)) calibration$keys$Observed else tuning$keys$Observed
+  interval_predicted <- if (length(calibration_predicted)) calibration_predicted else tuning_predicted
+  predictive_sigma <- sqrt(mean((interval_predicted - interval_observed)^2))
   interval_half_width <- cy_empirical_half_width(
-    tuning$keys$Observed, tuning_predicted,
+    interval_observed, interval_predicted,
     level = config$interval_level
   )
   tuning_output <- data.frame(
@@ -211,6 +225,12 @@ cy_build_ensemble <- function(base_results, config) {
     Phase = "tuning",
     stringsAsFactors = FALSE
   )
+  calibration_output <- data.frame(Method = rep("ensemble", length(calibration_predicted)),
+    RS = calibration$keys$RS, Year = calibration$keys$Year,
+    Observed = calibration$keys$Observed, Predicted = calibration_predicted,
+    Lower80 = calibration_predicted - interval_half_width,
+    Upper80 = calibration_predicted + interval_half_width,
+    Phase = rep("calibration", length(calibration_predicted)), stringsAsFactors = FALSE)
 
   evaluation <- cy_aligned_prediction_matrix(base_results, "evaluation_predictions")
   evaluation_predicted <- as.numeric(evaluation$matrix %*% weights)
@@ -248,8 +268,9 @@ cy_build_ensemble <- function(base_results, config) {
     selected_params = c(list(shrinkage = selected_shrinkage), as.list(weights)),
     tuning_table = tuning_table,
     tuning_predictions = tuning_output,
+    calibration_predictions = calibration_output,
     evaluation_predictions = evaluation_output,
-    cv_predictions = rbind(tuning_output, evaluation_output),
+    cv_predictions = rbind(tuning_output, calibration_output, evaluation_output),
     predictive_sigma = predictive_sigma,
     interval_half_width_80 = interval_half_width,
     final_model = structure(list(

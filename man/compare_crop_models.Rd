@@ -31,8 +31,8 @@ An auditable `crop_model_comparison` object containing candidate
   final fitted models, and input provenance.
 }
 \description{
-Hyperparameters and empirical interval widths are learned only from the
-tuning years. Each tuning and evaluation prediction is rolling-origin: the
+Hyperparameters are learned from tuning years. Interval widths use a separate
+calibration block when configured, otherwise tuning errors. Each prediction is rolling-origin: the
 response for year `t` is predicted using response data strictly before `t`.
 The package's automatic method is selected by tuning RMSE, never by the
 later evaluation scores.

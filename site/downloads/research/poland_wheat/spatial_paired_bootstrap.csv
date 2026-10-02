@@ -1,0 +1,4 @@
+"Method","Reference","N","Years","RMSEDifference","Lower","Upper","Confidence","Repetitions","BlockLength","Seed"
+"panel_ridge","pooled_trend",112,7,-0.257975131111246,-0.918600699992131,0.330691100723875,0.95,2000,2,2718
+"hierarchical","pooled_trend",112,7,-0.274491184789468,-0.991817477010471,0.525653304219533,0.95,2000,2,2718
+"stress_lag","pooled_trend",112,7,-0.108518601205908,-0.954730506386121,0.596972740465455,0.95,2000,2,2718

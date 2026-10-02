@@ -15,7 +15,11 @@ fit_crop_model(data, method = "hierarchical", parameters = NULL, robust = TRUE)
 fixed defaults rather than selecting them from the supplied response.
 For `stress_lag`, parameters are `lambda`, `smooth_ratio`, `threshold`,
 and optional `temperature_variable`/`precipitation_variable` labels.
-Defaults are 100, 10, and 0.75, with compound terms disabled.}
+Defaults are 100, 10, and 0.75, with compound terms disabled.
+Optional `components` selects a subset of `linear`, `upper_tail`,
+`lower_tail`, and `compound_hot_dry`; `linear` is required.
+`regional_effects = FALSE` removes regional intercept/trend deviations
+for a controlled ablation. Defaults retain all components and deviations.}
 
 \item{robust}{Whether to use robust fitting where supported.}
 }

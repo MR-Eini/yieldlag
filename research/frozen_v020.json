@@ -1,0 +1,64 @@
+{
+  "timestamp": "2026-10-02T21:15:05.2657754Z",
+  "commit": "537eecbe2b8d3c24e2aa467db318c1c7f573a4b2",
+  "version": "0.2.0",
+  "purpose": "Freeze existing implementation before external-country evaluation",
+  "files": [
+    {
+      "path": "R/artifacts.R",
+      "sha256": "69b522b0af21ae55ba647908e2fed5b4d683523d256abd897b71ab47603569b7"
+    },
+    {
+      "path": "R/core.R",
+      "sha256": "4fb4ea6cbea3ba23c2a19716d1428709abd21483d535d2b473ea7e91ebaef566"
+    },
+    {
+      "path": "R/data.R",
+      "sha256": "5310ac9c6a41134f596e32723dd87a2798ba81788375a0d2e3164126c5dee73c"
+    },
+    {
+      "path": "R/evaluation.R",
+      "sha256": "678686402c4fe2174f3110eef8ef38809d0e6dffd8bb732b70ed538a7f06de97"
+    },
+    {
+      "path": "R/example.R",
+      "sha256": "466784e1fd6ffd0c7991c041787398de890039be9e9f3f46b9aae723bf8d75c5"
+    },
+    {
+      "path": "R/metrics.R",
+      "sha256": "27ed0f0fe9c1388631b4fff917f9ac23053e76c7e5c9fa047e74787888b879b4"
+    },
+    {
+      "path": "R/models.R",
+      "sha256": "21f55ab8b1b25f3b0b5eb15c223c4f1003dc939040e4aa7f298d03c629fd827c"
+    },
+    {
+      "path": "R/package.R",
+      "sha256": "e7836d879185c924196b2b4b15cadcfa6f1a76ecb72bd1145617aa9c9e117ca6"
+    },
+    {
+      "path": "R/public-data.R",
+      "sha256": "2d630b2a0913dd4534c853d6cf8be4dda19d8568b76dd5d3870d1cedbb12a632"
+    },
+    {
+      "path": "R/public-model.R",
+      "sha256": "70fba98543f6e5efc0eb7f2a26449fa74a574a4c874ebbf64b56e753da01df04"
+    },
+    {
+      "path": "R/reporting.R",
+      "sha256": "4e2d1ed3a99d20073cb4e86ca3a54a4231b070cb511514c07fa90c51be6f2742"
+    },
+    {
+      "path": "R/stress-example.R",
+      "sha256": "36a54b165ff1a345762237027bcf2a00704c1710d4357832586f02fd76fada6e"
+    },
+    {
+      "path": "R/stress-lag.R",
+      "sha256": "ad64fc3d968898fe12d6cc56707e2068bc316d0305692e0e8728d81277b6f532"
+    },
+    {
+      "path": "R/workflow.R",
+      "sha256": "92dd5d594ac161cdfc1a4a76d08fdc2d0093be746f68b34e89990884d80c305c"
+    }
+  ]
+}

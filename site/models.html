@@ -5,8 +5,8 @@
 <link rel="stylesheet" href="assets/style.css?v=7eabfc71cfe6"><script defer src="assets/app.js?v=c36d7c7d931b"></script>
 </head><body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="wrap header-row"><a class="brand" href="index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.2.0</span></a>
-<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="models.html" class="active" aria-current="page">Models</a><a href="poland.html">Poland example</a><a href="reference/index.html">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.3.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="models.html" class="active" aria-current="page">Models</a><a href="poland.html">Poland example</a><a href="research.html">Research</a><a href="reference/index.html">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
 <main id="main"><section class="hero wrap"><span class="eyebrow">Statistical specification</span><h1>Seasonal effects.<br>Explicit assumptions.</h1><p class="lead">The equations, penalties, training rules, and interpretation limits behind every estimator.</p></section><div class="wrap content-layout"><aside class="toc" aria-label="On this page"><a href="#estimators">Estimator overview</a><a href="#shared-estimation">Shared estimation</a><a href="#seasonal-stress-lag-basis">Stress-lag basis</a><a href="#prediction-interpretation">Prediction interpretation</a><a href="#ensemble-and-uncertainty">Ensemble and uncertainty</a><a href="#validation">Validation</a><a href="#references">References</a></aside><article class="prose"><h2 id="estimators">Eight complementary estimators</h2><div class="table-wrap"><table><thead><tr><th>Method</th><th>What it estimates</th></tr></thead><tbody><tr><td><code>trend</code></td><td>Independent regional linear yield trends.</td></tr><tr><td><code>persistence</code></td><td>The latest observed regional yield.</td></tr><tr><td><code>panel_ridge</code></td><td>Shared weather slopes with regional intercepts and trends.</td></tr><tr><td><code>local_ridge</code></td><td>Separate regularized weather slopes within each region.</td></tr><tr><td><code>pcr</code></td><td>Training-window principal components plus regional effects.</td></tr><tr><td><code>hierarchical</code></td><td>Partially pooled regional departures from global seasonal effects.</td></tr><tr><td><code>stress_lag</code></td><td>Linear and asymmetric anomaly responses, with optional hot–dry products.</td></tr><tr><td><code>ensemble</code></td><td>A non-negative, sum-to-one combination of the requested base estimators.</td></tr></tbody></table></div><h2 id="shared-estimation">Shared estimation</h2>
 <p>YieldLag models annual regional yield y_it using a standardized time trend,
 monthly weather terms, and regional effects. Preprocessing and coefficients are
@@ -75,6 +75,10 @@ half-widths are separately calibrated from national tuning errors. The nominal
 80% label describes the calibration target rather than a formal coverage guarantee.</p>
 <h2 id="references">References</h2>
 <ul>
+<li>Conradt (2022), ABSOLUT regional weather-aggregate selection and regression:
+  https://doi.org/10.1007/s00484-022-02356-5. YieldLag provides a different,
+  regularized panel framework; the evaluation adapter runs upstream GPL code
+  separately and does not incorporate that implementation into the MIT package.</li>
 <li>Schlenker and Roberts (2009), nonlinear weather-yield associations:
   <a href="https://doi.org/10.1073/pnas.0906865106">Read the study</a>.</li>
 <li>Gasparrini, Armstrong, and Kenward (2010), distributed lag nonlinear models:
@@ -90,8 +94,11 @@ province-year tuning RMSE and does not use evaluation rankings.</p>
 <p>The stress-lag climatology, anomaly scale, expanded feature scaling, and regional
 effects obey the same training-window rule. Compound mappings are declared by
 the user. The ensemble combines requested base estimators using tuning data.</p>
-<p>Tuning errors are reused for hyperparameter/method selection and interval
-calibration. They are not an unbiased independent performance estimate.
+<p>By default, tuning errors are reused for hyperparameter/method selection and
+interval calibration. Configure <code>calibration_years &gt; 0</code> to reserve years after
+tuning and before evaluation for separate interval calibration. Calibration
+responses never select method parameters or the automatic method. These
+temporally dependent empirical bands carry no distribution-free guarantee.
 The later block estimates the selected procedure on this dataset and period.
 Once used to guide development, it should be described as a development benchmark.</p>
 <h3 id="diagnostics">Diagnostics</h3>
@@ -99,7 +106,11 @@ Once used to guide development, it should be described as a development benchmar
 Predictive R-squared can be negative; squared correlation does not assess
 calibration. Coverage and width describe empirical prediction bands.
 Province-year observations share years and regions and are correlated.
-Year/block resampling is appropriate when estimating uncertainty for comparisons.</p>
+Year/block resampling is appropriate when estimating uncertainty for comparisons.
+<code>compare_crop_errors()</code> resamples paired consecutive circular year blocks,
+keeping all regions in each sampled year. It preserves the caller's random state.
+Its interval describes RMSE differences on the supplied period; seven annual
+blocks remain a small basis for inference.</p>
 <p>Prediction support flags marginal weather extrapolation and unseen regions.
 Its absence does not establish support of every weather combination.
 Decompositions reproduce the fitted equation, not causal or physiological effects.</p>
@@ -121,4 +132,4 @@ persistence and trend baselines, uncertainty for paired metric differences,
 sensitivity to seasons/grids, and information available at the intended issue date.
 Failures and weak crop targets should be reported alongside gains. Operational
 forecasting requires weather observations or forecasts actually available at
-that date and appropriately time-varying aggregation weights.</p></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>
+that date and appropriately time-varying aggregation weights.</p></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.3.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

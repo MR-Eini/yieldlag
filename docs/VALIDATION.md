@@ -13,8 +13,11 @@ The stress-lag climatology, anomaly scale, expanded feature scaling, and regiona
 effects obey the same training-window rule. Compound mappings are declared by
 the user. The ensemble combines requested base estimators using tuning data.
 
-Tuning errors are reused for hyperparameter/method selection and interval
-calibration. They are not an unbiased independent performance estimate.
+By default, tuning errors are reused for hyperparameter/method selection and
+interval calibration. Configure `calibration_years > 0` to reserve years after
+tuning and before evaluation for separate interval calibration. Calibration
+responses never select method parameters or the automatic method. These
+temporally dependent empirical bands carry no distribution-free guarantee.
 The later block estimates the selected procedure on this dataset and period.
 Once used to guide development, it should be described as a development benchmark.
 
@@ -25,6 +28,10 @@ Predictive R-squared can be negative; squared correlation does not assess
 calibration. Coverage and width describe empirical prediction bands.
 Province-year observations share years and regions and are correlated.
 Year/block resampling is appropriate when estimating uncertainty for comparisons.
+`compare_crop_errors()` resamples paired consecutive circular year blocks,
+keeping all regions in each sampled year. It preserves the caller's random state.
+Its interval describes RMSE differences on the supplied period; seven annual
+blocks remain a small basis for inference.
 
 Prediction support flags marginal weather extrapolation and unseen regions.
 Its absence does not establish support of every weather combination.

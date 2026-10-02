@@ -1,0 +1,17 @@
+[
+  {
+    "case": "poland_barley",
+    "origin": 2016,
+    "output": "research/external/absolut-runs/poland_barley-2016/absolut-412-output.dat"
+  },
+  {
+    "case": "poland_barley",
+    "origin": 2017,
+    "output": "research/external/absolut-runs/poland_barley-2017/absolut-412-output.dat"
+  },
+  {
+    "case": "poland_barley",
+    "origin": 2018,
+    "output": "research/external/absolut-runs/poland_barley-2018/absolut-412-output.dat"
+  }
+]

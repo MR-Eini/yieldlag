@@ -19,8 +19,8 @@ cy_tuning_method_metrics <- function(results) {
 
 #' Compare crop-yield methods with chronological validation
 #'
-#' Hyperparameters and empirical interval widths are learned only from the
-#' tuning years. Each tuning and evaluation prediction is rolling-origin: the
+#' Hyperparameters are learned from tuning years. Interval widths use a separate
+#' calibration block when configured, otherwise tuning errors. Each prediction is rolling-origin: the
 #' response for year `t` is predicted using response data strictly before `t`.
 #' The package's automatic method is selected by tuning RMSE, never by the
 #' later evaluation scores.
@@ -88,7 +88,8 @@ compare_crop_models <- function(
     stop("The weather panel does not reach predict_through.", call. = FALSE)
   }
   split <- cy_split_years(
-    training$Year, config$initial_fraction, config$tuning_fraction
+    training$Year, config$initial_fraction, config$tuning_fraction,
+    if (is.null(config$calibration_years)) 0L else config$calibration_years
   )
   if (length(split$evaluation) < 2L) {
     stop("The configured split leaves fewer than two evaluation years.", call. = FALSE)
@@ -160,7 +161,7 @@ compare_crop_models <- function(
 #' @param method Method to extract. `NULL` uses the method selected on tuning
 #'   RMSE only.
 #'
-#' @return A `crop_yield_model` with its tuning-calibrated interval.
+#' @return A `crop_yield_model` with its empirically calibrated interval.
 #' @export
 get_crop_model <- function(x, method = NULL) {
   if (!inherits(x, "crop_model_comparison")) {

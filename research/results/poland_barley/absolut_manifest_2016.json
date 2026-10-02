@@ -1,0 +1,27 @@
+{
+  "case": "poland_barley",
+  "origin": 2016,
+  "response_cutoff": 2015,
+  "upstream_doi": "10.5281/zenodo.5789350",
+  "source_sha256": {
+    "112_absolut.R": "3f3a81f93e60437c841f251964b4806bd54f9947df19142fa1967921778db9f5",
+    "212_absolut.R": "052676ff7f4b054215af0f607a570008178396b540700b7af64721928086bffc",
+    "312_absolut.R": "ae06c4bbb9767a3ca609603e8b4be1e2551892f82711dbba9b6056db8a6471b1",
+    "412_absolut.R": "b9030e3d832c6439cf91b4f71aa51ee7461f50f07731472f90d5851844bfbb88",
+    "512_absolut.R": "186e916b94b3bfb619f579c8e618f9f20e2d69b6e79be94000eae7887d401801"
+  },
+  "modifications": [
+    "sequential foreach backend instead of MPI",
+    "omit platform shell cleanup/printf commands in a fresh isolated directory",
+    "compute only the forecast-origin target column",
+    "preserve data frames for a single target column",
+    "upstream default 42-feature cap retained"
+  ],
+  "minimum_history": 17,
+  "principal_variables": [
+    "MAX",
+    "PCP"
+  ],
+  "bestof": 10,
+  "status": "complete"
+}

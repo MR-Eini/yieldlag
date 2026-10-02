@@ -1,7 +1,7 @@
 Package: yieldlag
 Type: Package
 Title: Seasonal Climate Responses and Regional Crop Yield Modelling
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
     person("Mohammad Reza", "Eini", email = "mohammad_eini@sggw.edu.pl",
            role = c("aut", "cre"))

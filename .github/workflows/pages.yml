@@ -6,6 +6,8 @@ on:
     paths:
       - 'site/**'
       - 'analysis/verify_website.py'
+      - 'analysis/verify_research.py'
+      - 'research/results/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -22,7 +24,9 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Verify website links and scientific outputs
-        run: python analysis/verify_website.py
+        run: |
+          python analysis/verify_website.py
+          python analysis/verify_research.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

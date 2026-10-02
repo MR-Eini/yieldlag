@@ -88,6 +88,10 @@ half-widths are separately calibrated from national tuning errors. The nominal
 
 ## References
 
+- Conradt (2022), ABSOLUT regional weather-aggregate selection and regression:
+  https://doi.org/10.1007/s00484-022-02356-5. YieldLag provides a different,
+  regularized panel framework; the evaluation adapter runs upstream GPL code
+  separately and does not incorporate that implementation into the MIT package.
 - Schlenker and Roberts (2009), nonlinear weather-yield associations:
   https://doi.org/10.1073/pnas.0906865106.
 - Gasparrini, Armstrong, and Kenward (2010), distributed lag nonlinear models:

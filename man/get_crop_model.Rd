@@ -13,7 +13,7 @@ get_crop_model(x, method = NULL)
 RMSE only.}
 }
 \value{
-A `crop_yield_model` with its tuning-calibrated interval.
+A `crop_yield_model` with its empirically calibrated interval.
 }
 \description{
 Extract a final fitted model from a comparison

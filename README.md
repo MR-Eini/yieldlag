@@ -6,7 +6,8 @@
 **Regional crop-yield modelling from seasonal climate.**
 
 [Documentation website](https://mr-eini.github.io/yieldlag/) ·
-[Poland results and plots](https://mr-eini.github.io/yieldlag/poland.html)
+[Poland results and plots](https://mr-eini.github.io/yieldlag/poland.html) ·
+[Comparative evaluation](https://mr-eini.github.io/yieldlag/research.html)
 
 YieldLag fits interpretable statistical models to regional yield and monthly
 weather panels. It combines smooth seasonal responses, regional effects,
@@ -18,7 +19,7 @@ Requires R 4.2 or later. Model estimation uses R's standard libraries.
 
 ```r
 install.packages("remotes")
-remotes::install_github("MR-Eini/yieldlag", ref = "v0.2.0",
+remotes::install_github("MR-Eini/yieldlag", ref = "v0.3.0",
                         build_vignettes = FALSE)
 ```
 
@@ -105,8 +106,11 @@ wheat <- read_crop_data(poland_example_path(), "wheat", harvest_month = 7)
 
 Examples retain all declared monthly terms. Rolling fits use observations
 preceding each forecast year. Hyperparameters, ensemble settings, method
-selection, and empirical 80% interval calibration use the tuning period;
-a later period evaluates the selected procedure. The result bundle includes
+selection use the tuning period. Set `calibration_years = 3` to reserve the
+next three years for empirical 80% interval calibration; the default of zero
+reuses tuning errors. A later period evaluates the selected procedure.
+`compare_crop_errors()` estimates paired RMSE uncertainty with year blocks.
+The result bundle includes
 candidate scores, row-level predictions, model objects, decompositions,
 support diagnostics, and input/output checksums.
 

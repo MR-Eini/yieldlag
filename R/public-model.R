@@ -41,6 +41,10 @@ cy_as_public_model <- function(engine, manifest, parameters = list(),
 #'   For `stress_lag`, parameters are `lambda`, `smooth_ratio`, `threshold`,
 #'   and optional `temperature_variable`/`precipitation_variable` labels.
 #'   Defaults are 100, 10, and 0.75, with compound terms disabled.
+#'   Optional `components` selects a subset of `linear`, `upper_tail`,
+#'   `lower_tail`, and `compound_hot_dry`; `linear` is required.
+#'   `regional_effects = FALSE` removes regional intercept/trend deviations
+#'   for a controlled ablation. Defaults retain all components and deviations.
 #' @param robust Whether to use robust fitting where supported.
 #'
 #' @return A `crop_yield_model` object.
