@@ -7,6 +7,7 @@ cy_default_parameters <- function(method, data) {
     pcr = list(components = min(5L, nrow(data$manifest),
       max(1L, length(unique(data$panel$Year)) - 2L))),
     hierarchical = list(lambda_global = 100, lambda_region = 300, smooth_ratio = 10),
+    stress_lag = list(lambda = 100, smooth_ratio = 10, threshold = 0.75),
     stop("fit_crop_model() fits base methods; use compare_crop_models() for an ensemble.",
       call. = FALSE)
   )
@@ -37,6 +38,9 @@ cy_as_public_model <- function(engine, manifest, parameters = list(),
 #' @param method One base method. Ensembles require the comparison workflow.
 #' @param parameters Named list of method parameters. `NULL` uses documented,
 #'   fixed defaults rather than selecting them from the supplied response.
+#'   For `stress_lag`, parameters are `lambda`, `smooth_ratio`, `threshold`,
+#'   and optional `temperature_variable`/`precipitation_variable` labels.
+#'   Defaults are 100, 10, and 0.75, with compound terms disabled.
 #' @param robust Whether to use robust fitting where supported.
 #'
 #' @return A `crop_yield_model` object.
@@ -146,6 +150,7 @@ coef.crop_yield_model <- function(object, ...) {
     trend = engine$coefficients,
     persistence = engine$history,
     panel_ridge = c(`(Intercept)` = engine$intercept, engine$coef),
+    stress_lag = c(`(Intercept)` = engine$intercept, engine$coef),
     local_ridge = list(intercepts = engine$intercepts, coefficients = engine$coefficients),
     pcr = c(`(Intercept)` = engine$intercept, engine$coef),
     hierarchical = list(

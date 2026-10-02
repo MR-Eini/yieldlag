@@ -1,15 +1,15 @@
 cff-version: 1.2.0
-message: "If you use this package, please cite this software release and the related study when using the Poland case study."
+message: "Please cite YieldLag when using this software and the associated study when using the Poland example."
 type: software
-title: "cropyieldmodel: Transparent Regional Statistical Crop Yield Modelling"
+title: "YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling"
 authors:
   - family-names: "Eini"
     given-names: "Mohammad Reza"
     alias: "MR-Eini"
-version: "0.1.0"
+version: "0.2.0"
 date-released: "2026-10-02"
-repository-code: "https://github.com/MR-Eini/cropyieldmodel"
-url: "https://github.com/MR-Eini/cropyieldmodel/releases/tag/v0.1.0"
+repository-code: "https://github.com/MR-Eini/yieldlag"
+url: "https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0"
 license: MIT
 keywords:
   - crop yield

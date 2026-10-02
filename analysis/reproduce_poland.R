@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # Reproduce the complete Poland reference experiment from the installed
-# cropyieldmodel package. The wrapper reproduce.ps1 installs the current source
+# yieldlag package. The wrapper reproduce.ps1 installs the current source
 # tree into an isolated project library before executing this file.
 
 arguments <- commandArgs(trailingOnly = TRUE)
@@ -22,7 +22,7 @@ values$harvest_month <- as.integer(values$harvest_month)
 values$last_yield_year <- as.integer(values$last_yield_year)
 values$predict_through <- as.integer(values$predict_through)
 
-suppressPackageStartupMessages(library(cropyieldmodel))
+suppressPackageStartupMessages(library(yieldlag))
 comparison <- run_crop_workflow(
   data_dir = poland_example_path(),
   crop = values$crop,

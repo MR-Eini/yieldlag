@@ -125,7 +125,7 @@ compare_crop_models <- function(
   runtime <- proc.time()[["elapsed"]] - start_time
   structure(list(
     call = match.call(),
-    package_version = as.character(utils::packageVersion("cropyieldmodel")),
+    package_version = as.character(utils::packageVersion("yieldlag")),
     crop = data$crop,
     harvest_month = data$harvest_month,
     config = config,
@@ -145,6 +145,7 @@ compare_crop_models <- function(
     national_predictions = compiled$national_final,
     monthly_coefficients = cy_extract_monthly_coefficients(results, data$manifest),
     manifest = data$manifest,
+    prediction_panel = prediction_panel,
     areas = data$areas,
     national_yields = data$national_yields,
     provenance = data$provenance,

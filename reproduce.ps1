@@ -32,7 +32,7 @@ try {
     Remove-Item Env:LC_CTYPE -ErrorAction SilentlyContinue
     $Version = ((Get-Content -LiteralPath (Join-Path $ProjectDirectory "DESCRIPTION")) |
         Where-Object { $_ -match '^Version:\s*' }) -replace '^Version:\s*', ''
-    $PackageArchive = Join-Path $ProjectDirectory "cropyieldmodel_$Version.tar.gz"
+    $PackageArchive = Join-Path $ProjectDirectory "yieldlag_$Version.tar.gz"
     if (Test-Path -LiteralPath $PackageArchive) {
         Remove-Item -LiteralPath $PackageArchive -Force
     }

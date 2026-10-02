@@ -1,13 +1,10 @@
-# Poland case-study inputs
+# Poland example data
 
-Annual yields, fixed crop-specific area weights, monthly weather through 2019,
-and season assumptions for 16 voivodeships. Read DATA_LICENSE.md for source
-terms and provenance gaps. The code MIT license does not apply to provider data.
-Unused drought indices were removed; selected weather values were retained
-verbatim. weather_preparation.csv records preparation; input_sha256.csv records
-numeric inputs. Use `read_crop_data(poland_example_path(), "wheat", 7)`.
-Derived unweighted national-mean rows were removed; yield_preparation.csv
-documents this change. National scoring uses weighted provincial observations.
+Annual yields, fixed crop-area weights, monthly weather, and crop-season
+metadata for 16 voivodeships. Use
+`read_crop_data(poland_example_path(), "wheat", harvest_month = 7)`.
 
-The package reproduces from supplied monthly tables. A full reconstruction
-from original gridded data remains a documentation task.
+`DATA_LICENSE.md` documents sources and terms. `input_sha256.csv` lists numeric
+input hashes. Preparation manifests record column/row filtering and source hashes.
+National reference yields are constructed from weighted provincial observations.
+Weather-variable and area-weight metadata are described in `docs/DATA.md`.

@@ -1,22 +1,24 @@
-Package: cropyieldmodel
+Package: yieldlag
 Type: Package
-Title: Transparent Regional Statistical Crop Yield Modelling
-Version: 0.1.0
+Title: Seasonal Climate Responses and Regional Crop Yield Modelling
+Version: 0.2.0
 Authors@R: c(
-    person("Mohammad Reza", "Eini", email = "80261978+MR-Eini@users.noreply.github.com",
+    person("Mohammad Reza", "Eini", email = "mohammad_eini@sggw.edu.pl",
            role = c("aut", "cre"))
   )
 Description: Fits, tunes, evaluates, compares, and ensembles regional
     statistical crop yield models from monthly weather and yield panels.
     The package implements chronological rolling-origin validation,
     leakage-safe preprocessing, partial pooling, robust regression,
-    distributed-lag smoothing, residual autoregression, empirical prediction
-    intervals, and area-weighted aggregation. Every high-level workflow
-    returns row-level predictions and tuning results so that model selection
-    and reported scores can be audited.
+    distributed-lag smoothing, asymmetric weather-anomaly responses,
+    compound hot-dry interactions, residual autoregression, empirical
+    prediction intervals, and area-weighted aggregation. Prediction
+    decomposition and training-range diagnostics support interpretation.
+    Row-level predictions and tuning results document model selection
+    and reported performance.
 License: MIT + file LICENSE
-URL: https://github.com/MR-Eini/cropyieldmodel
-BugReports: https://github.com/MR-Eini/cropyieldmodel/issues
+URL: https://github.com/MR-Eini/yieldlag
+BugReports: https://github.com/MR-Eini/yieldlag/issues
 Encoding: UTF-8
 Depends: R (>= 4.2.0)
 Suggests:

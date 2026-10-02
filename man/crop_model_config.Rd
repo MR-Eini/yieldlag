@@ -11,7 +11,9 @@ crop_model_config(
   tuning_fraction = 0.3,
   grids = NULL,
   interval_level = 0.8,
-  robust = TRUE
+  robust = TRUE,
+  stress_temperature = NULL,
+  stress_precipitation = NULL
 )
 }
 \arguments{
@@ -33,11 +35,16 @@ evaluation block.}
 package defaults.}
 
 \item{interval_level}{Coverage level for empirical prediction intervals.
-Version 0.1.0 uses 0.80 so interval columns and diagnostics remain
+Version 0.2.0 uses 0.80 so interval columns and diagnostics remain
 unambiguous.}
 
 \item{robust}{Whether to use robust iteratively reweighted fitting where
 supported.}
+
+\item{stress_temperature, stress_precipitation}{Optional weather-variable
+labels for compound hot-dry terms in `stress_lag`. Specify both or neither.
+Matching calendar months and seasonal positions are required. Thresholds
+are standardized anomalies, not physiological temperature thresholds.}
 }
 \value{
 An object of class `crop_model_config`.

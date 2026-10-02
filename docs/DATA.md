@@ -1,51 +1,48 @@
-# Data contract
+# Data specification
 
-`prepare_crop_data()` accepts a unique region/year panel, finite declared weather
-terms, optional positive area weights, and optional national observations with
-unique years. Missing yields are permitted for forecast years. Mappings are explicit.
+## Panel interface
+
+`prepare_crop_data()` requires one row per region/year, finite declared weather
+terms, and yield observations or NA for forecast years. Column mappings are
+explicit. Optional areas must be positive, finite, and unique by region;
+national observations must have unique years.
+
+The manifest maps terms to variable labels, calendar months, and seasonal
+positions. Compound terms require explicit temperature/precipitation mappings
+with matching months and positions. Variable names imply no physiological thresholds.
+
+## Directory interface
 
 `read_crop_data()` reads yield.csv, crop_areas.csv, and weather/pl_<region>.dat.
-`poland_example_path()` locates the installed example. RS above 999 represents
-provinces. A genuine national observation can be supplied separately. Use the in-memory
-constructor for other schemas.
+RS identifiers above 999 represent provinces in this schema. Use the in-memory
+interface for other layouts. `poland_example_path()` locates installed example inputs.
 
-## Bundled inputs and processing
+## Poland example
 
-- Yields: 1999--2019, dt/ha (100 kg/ha).
-- Area weights: fixed study weights in hectares; not annual prospective weights.
-  The exact averaging recipe is not supplied.
-- Weather: 1990--2019, supplied monthly province values retained without conversion.
-- Seasons: assumptions in inst/extdata/poland/crop_seasons.csv.
-- Sources/terms: inst/extdata/poland/DATA_LICENSE.md.
-- weather_preparation.csv records original/release SHA-256 and the removal of
-  unused SPI/SPEI/SMI columns. Seven weather columns and dates are unchanged.
-- input_sha256.csv records every included numeric CSV/DAT input.
+| Input | Scope |
+|---|---|
+| Yield | Provincial crop/aggregate/forage targets, 1999--2019; dt/ha |
+| Area | Fixed crop-specific study weights; hectares |
+| Weather | Monthly provincial values, 1990--2019 |
+| Seasons | Target-specific agricultural-year endpoint assumptions |
 
-The supplied POLAND rows were exactly unweighted provincial means (294 of 294
-crop/year values), not independent national observations. The release removes
-those 21 rows and records source/release hashes in yield_preparation.csv.
-National scoring falls back to area-weighted observed provincial yields.
-Provincial numeric observations were retained. Previously stored national
-metrics from the research directory used a different comparator and should
-not be compared directly to results from this release.
+Crop yields use dt/ha (100 kg/ha). Area-weight averaging periods and detailed
+spatial/monthly weather aggregation lineage are unspecified. Weather working
+conventions are Celsius for MAX/MIN/TAS/DIF, percent for HMD, and monthly mm
+for PCP; these conventions have not been independently verified against source
+grids. SLR denotes solar radiation with an unspecified numeric unit/derivation.
+No automatic unit conversions are applied.
 
-The paper defines SLR as solar radiation, PCP as precipitation, MAX/MIN as
-maximum/minimum temperature, HMD as humidity, DIF as MAX minus MIN, and TAS as
-mean temperature. Working conventions are Celsius for temperatures/differences,
-percent for humidity, and monthly mm for precipitation; these are not independently
-verified against the original grids. Solar-radiation scale/unit and derivation are
-unconfirmed. Preserve supplied scales for reproduction; verify units/aggregation
-before transfer or physical interpretation. Upstream G2DC-PL+ lists precipitation,
-min/max temperature, humidity, and wind, rather than solar radiation. DIF, TAS,
-and SLR are study-specific derived columns whose full recipes need recovery.
+An agricultural year ending in June uses July--December of the previous year
+and January--June of the harvest year. Seven variables produce 84 monthly terms.
+The manifest records the term/calendar mapping. Incomplete initial seasonal
+windows are omitted; requested cutoffs are validated by the workflow.
 
-## Agricultural year
+National references are weighted provincial observations, not independent national
+measurements. Fixed areas and full harvest-year weather define a retrospective
+benchmark. Earlier forecasts require inputs available at the intended issue date.
 
-For harvest year t ending in June, July--December of t-1 precedes January--June
-of t. Seven variables contribute twelve months each, giving 84 terms. Wheat
-ending in July uses August--December then January--July. Each output bundle
-records the complete feature/calendar mapping. Initial/incomplete seasonal
-windows are omitted by the reader; the workflow checks requested cutoffs.
-
-Using 2019 weather and training only through 2018 makes the example retrospective.
-Observed 2019 yields exist in the file but are withheld from fitting under that cutoff.
+`input_sha256.csv` records input bytes. Preparation manifests document exclusion
+of unused drought indices and derived unweighted national-mean rows; retained
+provincial and selected weather values are unchanged.
+[Data attribution](../inst/extdata/poland/DATA_LICENSE.md) describes source terms.

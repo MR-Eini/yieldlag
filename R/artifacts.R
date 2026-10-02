@@ -10,7 +10,8 @@ cy_known_artifacts <- function() {
     "national_predictions.png", "province_cv_predictions.csv",
     "province_predictions.csv", "report.md", "run_manifest.txt",
     "selected_hyperparameters.csv", "session_info.txt",
-    "weather_feature_manifest.csv"
+    "weather_feature_manifest.csv", "stress_basis_coefficients.csv",
+    "prediction_support.csv", "stress_prediction_components.csv"
   )
 }
 
@@ -49,7 +50,7 @@ cy_write_comparison_report <- function(x, path, selected_parameters, ensemble_we
     x$metrics$Method == x$selected_method, , drop = FALSE
   ]
   lines <- c(
-    "# Crop-yield model comparison",
+    "# YieldLag model comparison",
     "",
     paste("- Crop:", x$crop),
     paste("- Agricultural-year endpoint month:", x$harvest_month),
@@ -100,9 +101,9 @@ cy_write_comparison_report <- function(x, path, selected_parameters, ensemble_we
     "",
     "## Interpretation",
     "",
-    "Every rolling prediction uses yield observations strictly earlier than its target year. Scaling, principal components, robust weights, residual correction, hyperparameters, ensemble shrinkage, and interval widths are re-estimated only from data available to the relevant stage.",
+    "Each rolling fit excludes target-year yields and estimates preprocessing from its training window. Hyperparameters, ensemble settings, method selection, and interval widths are learned on the tuning block and held fixed for later evaluation.",
     "",
-    "The later block estimates performance for this dataset and split. Once inspected during model development, it is not a permanently untouched confirmatory dataset. National metrics are based on few years and should be treated as secondary evidence.",
+    "Later-period scores describe this dataset and split. Forecast errors share years and regions; metric comparisons require appropriate uncertainty estimates. Empirical interval coverage and training-range diagnostics do not provide guarantees on new populations.",
     "",
     "## Reproduction",
     "",
@@ -151,6 +152,20 @@ write_crop_results <- function(x, output_dir, overwrite = FALSE) {
   input_checksums <- cy_input_checksums(x$provenance)
   models <- lapply(names(x$results), function(method) get_crop_model(x, method))
   names(models) <- names(x$results)
+  # Diagnostic inputs are retained by the comparison constructor, not rebuilt
+  # from predictions or inferred from exported row identifiers.
+  if (!is.null(x$prediction_panel)) {
+    support <- do.call(rbind, lapply(names(models), function(method) {
+      data.frame(Method = method, prediction_support(models[[method]], x$prediction_panel))
+    }))
+    utils::write.csv(support, file.path(output_dir, "prediction_support.csv"), row.names = FALSE)
+    if ("stress_lag" %in% names(models)) {
+      utils::write.csv(cy_stress_coefficients(models$stress_lag$engine),
+        file.path(output_dir, "stress_basis_coefficients.csv"), row.names = FALSE)
+      utils::write.csv(explain_crop_prediction(models$stress_lag, x$prediction_panel),
+        file.path(output_dir, "stress_prediction_components.csv"), row.names = FALSE)
+    }
+  }
 
   utils::write.csv(x$manifest,
     file.path(output_dir, "weather_feature_manifest.csv"), row.names = FALSE)
@@ -205,7 +220,7 @@ write_crop_results <- function(x, output_dir, overwrite = FALSE) {
   writeLines(session_lines, file.path(output_dir, "session_info.txt"), useBytes = TRUE)
   manifest_lines <- c(
     paste("Run timestamp UTC:", format(Sys.time(), tz = "UTC", usetz = TRUE)),
-    paste("Package:", "cropyieldmodel", x$package_version),
+    paste("Package:", "yieldlag", x$package_version),
     paste("R version:", R.version.string),
     paste("Platform:", R.version$platform),
     paste("Crop:", x$crop),

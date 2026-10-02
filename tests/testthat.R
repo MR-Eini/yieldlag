@@ -1,4 +1,4 @@
 library(testthat)
-library(cropyieldmodel)
+library(yieldlag)
 
-test_check("cropyieldmodel")
+test_check("yieldlag")

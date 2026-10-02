@@ -12,7 +12,10 @@ fit_crop_model(data, method = "hierarchical", parameters = NULL, robust = TRUE)
 \item{method}{One base method. Ensembles require the comparison workflow.}
 
 \item{parameters}{Named list of method parameters. `NULL` uses documented,
-fixed defaults rather than selecting them from the supplied response.}
+fixed defaults rather than selecting them from the supplied response.
+For `stress_lag`, parameters are `lambda`, `smooth_ratio`, `threshold`,
+and optional `temperature_variable`/`precipitation_variable` labels.
+Defaults are 100, 10, and 0.75, with compound terms disabled.}
 
 \item{robust}{Whether to use robust fitting where supported.}
 }

@@ -1,64 +1,55 @@
-# Data attribution and terms
+# Data sources and terms
 
-The MIT code license does not relicense provider data. Mohammad Reza Eini
-authorized inclusion of these study tables in the public release on 2026-10-02.
-Upstream terms remain applicable.
-
-## Weather
+## Climate
 
 Piniewski, M., Szcześniak, M., Kardel, I., and Berezowski, T. (2020),
 *G2DC-PL+: A gridded 2 km daily climate dataset for the union of Polish territory
 and the Vistula and Odra basins*, Version 1, 4TU.ResearchData.
-https://doi.org/10.4121/uuid:a3bed3b8-e22a-4b68-8d75-7b87109c9feb
+https://doi.org/10.4121/uuid:a3bed3b8-e22a-4b68-8d75-7b87109c9feb.
 
-The catalogue and registered DataCite metadata identify **CC0 1.0 Universal**:
-https://creativecommons.org/publicdomain/zero/1.0/. Checked 2026-10-02.
-Associated description: https://doi.org/10.5194/essd-13-1273-2021.
+The source catalogue identifies CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/.
+Dataset description: https://doi.org/10.5194/essd-13-1273-2021.
 
-These are study-specific monthly province tables, not the original grid.
-Eini et al. document aggregation to voivodeships and report climate-source access
-on 18 May 2026. The catalogue lists five variables, including wind but not solar
-radiation. Local tables add DIF, TAS, and SLR. Their complete derivation and the
-SLR unit are not preserved here; the upstream CC0 statement alone does not
-establish those derivations. They are included as maintainer-supplied study inputs,
-without claiming independently verified solar-radiation provenance.
+The example contains monthly voivodeship tables derived for the associated study.
+The source catalogue lists precipitation, minimum/maximum temperature, humidity,
+and wind. The example also contains temperature difference, mean temperature,
+and solar radiation. Full aggregation lineage, solar-radiation derivation/unit,
+and the relationship of these additional columns to the catalogue variables
+are unspecified. Source CC0 metadata alone do not establish that lineage.
 
-Unused SPI/SPEI/SMI columns were removed for this release. Selected weather
-values were retained verbatim; weather_preparation.csv records source/release
-hashes. Original grids and provider logos are not redistributed. The derivatives
-are not endorsed by the providers.
+The selected weather values are unchanged; unused drought-index columns were
+excluded. `weather_preparation.csv` records source and distributed SHA-256 hashes.
+The tables are study derivatives and carry no provider endorsement.
 
 ## Agricultural statistics
 
-Source: **Statistics Poland (GUS / Central Statistical Office of Poland)**.
-The study identifies 1999--2019 yield/cultivation-area statistics obtained via
-https://stat.gov.pl/en/national-census/, last access **5 November 2024**.
-Supplied project tables were packaged for release **2 October 2026**.
+Source: Statistics Poland (GUS / Central Statistical Office of Poland).
+The associated study identifies 1999--2019 yield and cultivation-area statistics
+obtained via https://stat.gov.pl/en/national-census/, last accessed 5 November 2024.
 
-Provider reuse conditions:
-https://bip.stat.gov.pl/en/contact-with-the-office/reuse-of-public-sector-information/
+Reuse terms:
+https://bip.stat.gov.pl/en/contact-with-the-office/reuse-of-public-sector-information/.
+The provider requires attribution, creation/acquisition-time information, and
+a processing description, and is not responsible for processed results.
+Original table identifiers, issue dates, and crop-specific acquisition records
+are unspecified; the access date above is reported by the associated study.
 
-The provider requires source, creation/acquisition-time information, and a
-processing description, and is not responsible for processed results.
-Original publication/table identifiers and issue dates are not preserved here.
-The access date is reported by the study, not a separately recovered acquisition
-record for each crop column.
+Processing: provincial values are arranged in crop/year CSV tables with standardized
+column labels. Areas are fixed study weights; their averaging period is unspecified.
+Derived unweighted national-mean rows are excluded. National reference yields
+are computed from provincial observations using the declared area weights.
+`yield_preparation.csv` records filtering and source/distributed hashes.
+These derivatives should not be represented as unmodified official GUS products.
 
-Processing: annual region/crop statistics were arranged in CSVs using package
-column names. crop_areas.csv contains fixed study weights rather than annual
-observations; the averaging recipe is unavailable. Provincial CSV numeric values
-were copied unchanged. The 21 POLAND rows were removed because all 294 crop/year
-values exactly equalled unweighted provincial means, not independent official
-national observations. Source/release hashes are in yield_preparation.csv.
-Software then builds seasonal matrices and weighted aggregates.
-These derivatives must not be presented as unmodified official GUS products.
-
-## Related study
+## Study
 
 Eini, M. R., Conradt, T., and Piniewski, M. (2026), *Sequential hybridization
 enhances the reliability of a statistical crop yield model - exemplified by
 wheat and sugar beet yields in the provinces of Poland*, Theoretical and Applied
 Climatology, https://doi.org/10.1007/s00704-026-06322-8.
 
-Recover the documented provenance gaps before claiming complete reconstruction
-from original grids or physically interpretable coefficient sensitivities.
+## Software license
+
+The MIT license applies to software, not to the provider data. Data users
+must retain the attribution and processing information above.

@@ -395,7 +395,7 @@ cy_predict_ensemble <- function(model, new_data, use_ar = TRUE) {
 }
 
 cy_fit_model <- function(method, data, manifest, params = list(), robust = TRUE) {
-  switch(method,
+  model <- switch(method,
     trend = cy_fit_trend(data),
     persistence = cy_fit_persistence(data),
     panel_ridge = cy_fit_panel_ridge(
@@ -409,8 +409,21 @@ cy_fit_model <- function(method, data, manifest, params = list(), robust = TRUE)
       data, manifest, params$lambda_global, params$lambda_region,
       params$smooth_ratio, robust
     ),
+    stress_lag = cy_fit_stress_lag(
+      data, manifest, params$lambda, params$smooth_ratio, params$threshold,
+      params$temperature_variable, params$precipitation_variable, robust
+    ),
     stop("Unknown method: ", method, call. = FALSE)
   )
+  x <- as.matrix(data[, manifest$Term, drop = FALSE])
+  scale <- apply(x, 2L, sd)
+  scale[!is.finite(scale) | scale < 1e-10] <- 1
+  model$weather_support <- list(
+    terms = manifest$Term, minimum = apply(x, 2L, min),
+    maximum = apply(x, 2L, max), center = colMeans(x), scale = scale,
+    regions = sort(unique(as.character(data$RS)))
+  )
+  model
 }
 
 cy_predict_model <- function(model, new_data, use_ar = TRUE) {
@@ -421,6 +434,7 @@ cy_predict_model <- function(model, new_data, use_ar = TRUE) {
     local_ridge = cy_predict_local_ridge(model, new_data, use_ar),
     pcr = cy_predict_pcr(model, new_data, use_ar),
     hierarchical = cy_predict_hierarchical(model, new_data, use_ar),
+    stress_lag = cy_predict_stress_lag(model, new_data, use_ar),
     ensemble = cy_predict_ensemble(model, new_data, use_ar),
     stop("Unknown fitted method: ", model$method, call. = FALSE)
   )
@@ -448,7 +462,20 @@ cy_parameter_sets <- function(method, config) {
       lambda_region = config$grids$hierarchical$lambda_region,
       smooth_ratio = config$grids$hierarchical$smooth_ratio,
       KEEP.OUT.ATTRS = FALSE
+    ),
+    stress_lag = expand.grid(
+      lambda = config$grids$stress_lag$lambda,
+      smooth_ratio = config$grids$stress_lag$smooth_ratio,
+      threshold = config$grids$stress_lag$threshold,
+      KEEP.OUT.ATTRS = FALSE
     )
   )
-  lapply(seq_len(nrow(grid)), function(i) as.list(grid[i, , drop = FALSE]))
+  lapply(seq_len(nrow(grid)), function(i) {
+    parameters <- as.list(grid[i, , drop = FALSE])
+    if (method == "stress_lag") {
+      parameters$temperature_variable <- config$stress_temperature
+      parameters$precipitation_variable <- config$stress_precipitation
+    }
+    parameters
+  })
 }

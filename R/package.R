@@ -1,4 +1,4 @@
-#' cropyieldmodel: transparent regional crop-yield modelling
+#' YieldLag: seasonal climate responses and regional crop yields
 #'
 #' The package supplies a deterministic, base-R modelling engine and a
 #' high-level workflow that keeps tuning, later evaluation, final fitting, and
@@ -22,7 +22,7 @@
 crop_model_methods <- function() {
   c(
     "trend", "persistence", "panel_ridge", "local_ridge", "pcr",
-    "hierarchical", "ensemble"
+    "hierarchical", "stress_lag", "ensemble"
   )
 }
 
@@ -44,6 +44,10 @@ cy_default_grids <- function() {
       lambda_region = c(30, 300, 3000),
       smooth_ratio = c(0, 10, 100)
     ),
+    stress_lag = list(
+      lambda = c(10, 100, 1000), smooth_ratio = c(0, 10),
+      threshold = c(0.5, 1)
+    ),
     ensemble = list(shrinkage = c(0, 1, 10, 100, 1000, 10000))
   )
 }
@@ -63,10 +67,14 @@ cy_default_grids <- function() {
 #' @param grids Named list of hyperparameter grids. `NULL` uses the documented
 #'   package defaults.
 #' @param interval_level Coverage level for empirical prediction intervals.
-#'   Version 0.1.0 uses 0.80 so interval columns and diagnostics remain
+#'   Version 0.2.0 uses 0.80 so interval columns and diagnostics remain
 #'   unambiguous.
 #' @param robust Whether to use robust iteratively reweighted fitting where
 #'   supported.
+#' @param stress_temperature,stress_precipitation Optional weather-variable
+#'   labels for compound hot-dry terms in `stress_lag`. Specify both or neither.
+#'   Matching calendar months and seasonal positions are required. Thresholds
+#'   are standardized anomalies, not physiological temperature thresholds.
 #'
 #' @return An object of class `crop_model_config`.
 #' @export
@@ -79,7 +87,7 @@ crop_model_config <- function(
     tuning_fraction = 0.30,
     grids = NULL,
     interval_level = 0.80,
-    robust = TRUE) {
+    robust = TRUE, stress_temperature = NULL, stress_precipitation = NULL) {
   methods <- unique(as.character(methods))
   unknown <- setdiff(methods, crop_model_methods())
   if (!length(methods)) stop("At least one method is required.", call. = FALSE)
@@ -104,9 +112,10 @@ crop_model_config <- function(
   }
   if (!is.numeric(interval_level) || length(interval_level) != 1L ||
       !is.finite(interval_level) || !isTRUE(all.equal(as.numeric(interval_level), 0.80))) {
-    stop("Version 0.1.0 supports interval_level = 0.80.", call. = FALSE)
+    stop("Version 0.2.0 supports interval_level = 0.80.", call. = FALSE)
   }
   if (is.null(grids)) grids <- cy_default_grids()
+  cy_validate_stress_pair(stress_temperature, stress_precipitation)
   grid_methods <- methods
   if (identical(methods, "ensemble")) grid_methods <- c(cy_base_methods(), "ensemble")
   required_grids <- intersect(
@@ -117,6 +126,16 @@ crop_model_config <- function(
   if (length(missing_grids)) {
     stop("Missing hyperparameter grids: ", paste(missing_grids, collapse = ", "), call. = FALSE)
   }
+  if ("stress_lag" %in% grid_methods) {
+    for (parameter in c("lambda", "smooth_ratio", "threshold")) {
+      values <- grids$stress_lag[[parameter]]
+      lower_ok <- if (parameter == "smooth_ratio") values >= 0 else values > 0
+      if (!is.numeric(values) || !length(values) || any(!is.finite(values)) ||
+          !all(lower_ok)) {
+        stop("Invalid stress_lag grid for ", parameter, ".", call. = FALSE)
+      }
+    }
+  }
   structure(list(
     methods = methods,
     weather_variables = weather_variables,
@@ -124,7 +143,9 @@ crop_model_config <- function(
     tuning_fraction = as.numeric(tuning_fraction),
     grids = grids,
     interval_level = as.numeric(interval_level),
-    robust = isTRUE(robust)
+    robust = isTRUE(robust),
+    stress_temperature = stress_temperature,
+    stress_precipitation = stress_precipitation
   ), class = "crop_model_config")
 }
 
@@ -150,7 +171,7 @@ print.crop_model_config <- function(x, ...) {
 #' @examples
 #' list.files(poland_example_path())
 poland_example_path <- function() {
-  path <- system.file("extdata", "poland", package = "cropyieldmodel")
+  path <- system.file("extdata", "poland", package = "yieldlag")
   if (!nzchar(path)) {
     candidate <- file.path("inst", "extdata", "poland")
     if (dir.exists(candidate)) path <- normalizePath(candidate, winslash = "/")

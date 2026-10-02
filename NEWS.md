@@ -1,24 +1,17 @@
-# cropyieldmodel 0.1.0
+# YieldLag 0.2.0
 
-- Published an initial GitHub research-software release with software and data
-  attribution, R/GitHub citations, and checks across four R/platform configurations.
-- Added a public deterministic synthetic example independent of Poland data.
-- Added a regression test that perturbs later responses and weather to verify
-  earlier predictions and tuning decisions remain unchanged.
-- Rejected impossible temporal splits, unequal metric vector lengths, and
-  duplicated national-yield years before they can silently affect results.
-- Removed unused drought-index columns from the public weather tables and
-  recorded original and release SHA-256 hashes.
-- Removed 21 derived Poland yield rows: all 294 crop/year values equalled
-  unweighted provincial means, rather than independent national observations.
-  National scores now use area-weighted observed provincial yields in this example.
-- Added an installable, base-R crop-yield modelling package.
-- Added explicit constructors for directory-based and arbitrary panel data.
-- Added direct fitting and prediction interfaces for six base methods,
-  including a last-observation persistence benchmark.
-- Added chronological tuning, later evaluation, and regularized ensembles.
-- Added tuning-only automatic method selection to prevent post-hoc selection
-  from the evaluation period.
-- Added complete reproducibility bundles with row-level predictions,
-  configuration, checksums, model objects, reports, figures, and session data.
-- Added independent synthetic unit tests and bundled Poland case-study inputs.
+- Added `stress_lag`: regional seasonal climatology, asymmetric anomaly terms,
+  optional hot-dry interactions, and regularized monthly response curves.
+- Added `explain_crop_prediction()` for exact additive stress-lag decomposition.
+- Added `prediction_support()` for training-range and unseen-region diagnostics.
+- Added a deterministic compound-stress example and independent regression tests.
+- Exported nonlinear basis coefficients, prediction components, and support diagnostics.
+- Renamed the R package and repository to `yieldlag`.
+- Revised documentation around model specification, usage, and validation.
+
+# 0.1.0
+
+- Introduced regional statistical estimators, chronological comparison, ensembles,
+  tuning-only method selection, empirical intervals, and reproducible result exports.
+- Included Poland provincial yield/weather inputs with data-source attribution.
+- Validated metric-vector lengths, temporal splits, and national-yield identifiers.

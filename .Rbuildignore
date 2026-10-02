@@ -18,6 +18,6 @@
 ^release-assets$
 ^\.release-check$
 ^tests/run_tests\.R$
-^cropyieldmodel\.Rcheck$
-^cropyieldmodel_[0-9.]+\.tar\.gz$
+^.*\.Rcheck$
+^.*_[0-9.]+\.tar\.gz$
 ^.*\.Rproj$

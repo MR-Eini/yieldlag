@@ -1,128 +1,127 @@
-# cropyieldmodel
+# YieldLag
 
-[![R package check](https://github.com/MR-Eini/cropyieldmodel/actions/workflows/r-tests.yml/badge.svg)](https://github.com/MR-Eini/cropyieldmodel/actions/workflows/r-tests.yml)
-[![Release](https://img.shields.io/github/v/release/MR-Eini/cropyieldmodel)](https://github.com/MR-Eini/cropyieldmodel/releases)
+[![R package check](https://github.com/MR-Eini/yieldlag/actions/workflows/r-tests.yml/badge.svg)](https://github.com/MR-Eini/yieldlag/actions/workflows/r-tests.yml)
+[![Release](https://img.shields.io/github/v/release/MR-Eini/yieldlag)](https://github.com/MR-Eini/yieldlag/releases)
 
-An R package for transparent regional statistical crop-yield modelling.
-Prepare weather/yield panels, compare methods chronologically, select a method
-using tuning data, and export decisions and predictions for audit.
-Maintainer: **Mohammad Reza Eini**.
+**Regional crop-yield modelling from seasonal climate.**
 
-This initial research-software release requires **R 4.2 or newer** and has no
-runtime dependencies outside R's standard libraries. It is not on CRAN.
+YieldLag fits interpretable statistical models to regional yield and monthly
+weather panels. It combines smooth seasonal responses, regional effects,
+nonlinear weather anomalies, and chronological model comparison.
 
-## Install
+## Installation
+
+Requires R 4.2 or later. Model estimation uses R's standard libraries.
 
 ```r
 install.packages("remotes")
-remotes::install_github("MR-Eini/cropyieldmodel", ref = "v0.1.0",
+remotes::install_github("MR-Eini/yieldlag", ref = "v0.2.0",
                         build_vignettes = FALSE)
 ```
 
-Alternatively, download `cropyieldmodel_0.1.0.tar.gz` from the
-[release page](https://github.com/MR-Eini/cropyieldmodel/releases):
+A source package with rendered tutorials is available from
+[GitHub Releases](https://github.com/MR-Eini/yieldlag/releases).
+
+## Seasonal stress responses
+
+The `stress_lag` estimator adds asymmetric anomaly responses and compound
+hot-dry terms to a regularized regional model:
+
+- Each training window estimates region-specific monthly means and pooled
+  within-region variability.
+- Separate upper and lower anomaly terms allow different responses to unusually
+  high and low weather values.
+- Explicit temperature and precipitation mappings enable same-month hot-dry
+  interactions.
+- Ridge and second-difference penalties regularize effect magnitudes and
+  variation across seasonal months.
+
+Thresholds are standardized weather anomalies, not physiological crop-damage
+thresholds. [Model specification](docs/MODELS.md) defines the basis and penalties.
+
+## Example
+
+The deterministic example below contains a declared nonlinear response and
+fictional weather. It illustrates the estimator and does not measure real-crop skill.
 
 ```r
-install.packages("cropyieldmodel_0.1.0.tar.gz", repos = NULL, type = "source")
-```
+library(yieldlag)
+data <- synthetic_stress_example()
 
-## Quick example
-
-This small deterministic example uses fictional data and runs without files.
-Its accuracy demonstrates API behaviour, not performance on real crops.
-
-```r
-library(cropyieldmodel)
-data <- synthetic_crop_example()
-comparison <- compare_crop_models(
-  data,
-  config = crop_model_config(
-    methods = c("trend", "persistence", "panel_ridge", "ensemble"),
-    weather_variables = "TMP",
-    grids = list(
-      panel_ridge = list(lambda = c(10, 100), smooth_ratio = 0),
-      ensemble = list(shrinkage = c(0, 10))
-    )
-  ),
-  last_yield_year = 2015, predict_through = 2016, verbose = FALSE
+config <- crop_model_config(
+  methods = c("trend", "panel_ridge", "stress_lag", "ensemble"),
+  weather_variables = c("TMP", "PCP"),
+  stress_temperature = "TMP",
+  stress_precipitation = "PCP",
+  robust = FALSE,
+  grids = list(
+    panel_ridge = list(lambda = c(1, 10), smooth_ratio = 0),
+    stress_lag = list(lambda = c(1, 10), smooth_ratio = 0,
+                      threshold = c(0.5, 1)),
+    ensemble = list(shrinkage = c(0, 10))
+  )
 )
+comparison <- compare_crop_models(data, config, 2030, 2031, verbose = FALSE)
 summary(comparison)
-model <- get_crop_model(comparison)
-predict(model, data$panel[data$panel$Year == 2016, ], interval = "prediction")
-write_crop_results(comparison, "results/synthetic")
+
+model <- get_crop_model(comparison, "stress_lag")
+future <- subset(data$panel, Year == 2031)
+predict(model, future, interval = "prediction")
+explain_crop_prediction(model, future)
+prediction_support(model, future)
+write_crop_results(comparison, "results/stress_example")
 ```
 
-For your own panel, use `prepare_crop_data()` with explicit column mappings.
-Read the tutorials under `vignettes/`, or install with `build_vignettes = TRUE`
-and use `vignette("getting-started", package = "cropyieldmodel")`.
+`explain_crop_prediction()` decomposes a stress-lag prediction into trend,
+regional, weather, compound, and residual components that sum to its prediction.
+Components are statistical contributions relative to training feature means.
+`prediction_support()` flags terms outside observed training ranges and unseen
+regions; it is a diagnostic rather than a calibrated measure of forecast confidence.
 
-## Methods and outputs
+## Estimators
 
-- Province trend and last-observation persistence baselines.
-- Panel ridge, local ridge, principal-component regression, and a hierarchical
-  distributed-lag model with optional robust fitting and pooled AR(1) correction.
-- An ensemble with non-negative weights summing to one.
-- Rolling-origin tuning followed by later rolling evaluation.
-- Automatic method selection using province-year **tuning RMSE only**.
-- Empirical 80% intervals calibrated in tuning, with separate national calibration.
-- Area-weighted aggregation, candidate grids, row-level predictions, metrics,
-  model objects, configuration, checksums, figures, and session information.
+| Method | Response structure |
+|---|---|
+| `trend` | Independent regional yield trends |
+| `persistence` | Most recent regional observed yield |
+| `panel_ridge` | Shared weather response with regional intercepts and trends |
+| `local_ridge` | Separate regularized regional weather responses |
+| `pcr` | Training-window principal components and regional effects |
+| `hierarchical` | Partially pooled seasonal weather responses |
+| `stress_lag` | Asymmetric seasonal anomalies and optional hot-dry interactions |
+| `ensemble` | Non-negative, sum-to-one combination of base estimators |
 
-## Poland example and reproduction
+## Data and validation
 
-The bundled case study contains annual yields and fixed area weights for 16
-Polish voivodeships and monthly weather. The reader rebuilds 84 monthly terms
-from seven variables and twelve months, without previous fitted results.
+Use `prepare_crop_data()` for in-memory panels with explicit column mappings.
+For the bundled Poland example:
 
 ```r
 wheat <- read_crop_data(poland_example_path(), "wheat", harvest_month = 7)
-comparison <- compare_crop_models(wheat, last_yield_year = 2018,
-                                  predict_through = 2019)
-write_crop_results(comparison, "results/wheat")
 ```
 
-The full grid is substantially slower than the quick example. From a checkout,
-`./reproduce.ps1` builds and installs the current source in an isolated library
-and runs the full barley comparison. On other platforms, install the package,
-then run `Rscript analysis/reproduce_poland.R`.
+Examples retain all declared monthly terms. Rolling fits use observations
+preceding each forecast year. Hyperparameters, ensemble settings, method
+selection, and empirical 80% interval calibration use the tuning period;
+a later period evaluates the selected procedure. The result bundle includes
+candidate scores, row-level predictions, model objects, decompositions,
+support diagnostics, and input/output checksums.
 
-With observations through 2018, the default split is initial history 1999--2005,
-tuning 2006--2011, evaluation 2012--2018, final fitting 1999--2018, and a
-retrospective 2019 forecast using 2019 weather. Rolling forecasts use yield
-data strictly before the forecast year. Preprocessing is fitted within each
-training window. See [validation](docs/VALIDATION.md).
+The Poland example uses complete harvest-year weather and fixed area weights;
+it is a retrospective benchmark. National observations are constructed from
+weighted provincial yields. Monthly data cannot resolve daily heat exposure.
+Neither prediction decompositions nor model coefficients establish causal effects.
+[Validation](docs/VALIDATION.md) and [data documentation](docs/DATA.md) describe
+these assumptions and interpretation limits.
 
-## Data terms and scientific limits
+## Citation and license
 
-Code is MIT licensed: [LICENSE.md](LICENSE.md). Data have separate terms:
-[data attribution](inst/extdata/poland/DATA_LICENSE.md) and [data contract](docs/DATA.md).
-G2DC-PL+ is CC0; Statistics Poland data require source and processing attribution.
-Bundled tables are study-specific derivatives, not official new source editions.
-Solar-radiation units and derivation are not established by the local tables;
-confirm them before interpreting coefficients as physical sensitivities.
+Maintainer: **Mohammad Reza Eini**. Use `citation("yieldlag")` to cite the software.
 
-This is a statistical framework, not a simulator of physiology, management,
-soil water balance, pests, or phenology. Complete harvest-year weather makes
-these forecasts retrospective. Fixed study area weights also make national
-results a retrospective benchmark, rather than prospective national forecasting.
-Derived unweighted Poland yield rows were removed from the example; its national
-scores use area-weighted observed provincial yields. See the data preparation record.
+The Poland data setting is described by Eini, Conradt, and Piniewski (2026),
+[Theoretical and Applied Climatology](https://doi.org/10.1007/s00704-026-06322-8).
+Nonlinear exposure responses and distributed-lag models have an established
+literature; YieldLag implements a regularized seasonal basis for regional yield panels.
 
-The evaluation period has already been inspected during development and is
-not an untouched confirmatory test. Province-year errors are correlated, and
-national evaluation contains only seven years. External periods/countries,
-spatial holdouts, and uncertainty for metric differences remain necessary.
-No estimator wins for every crop; empirical interval labels are not externally
-validated coverage guarantees.
-
-## Citation and development
-
-Use `citation("cropyieldmodel")` or GitHub's **Cite this repository** button.
-The related study is Eini, Conradt, and Piniewski (2026), *Theoretical and Applied
-Climatology*, [doi:10.1007/s00704-026-06322-8](https://doi.org/10.1007/s00704-026-06322-8).
-The software supplies a separate estimator and workflow; the study's results
-are not validation of these new estimators.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [publication strategy](docs/PUBLICATION_STRATEGY.md).
-The public repository contains source, examples, and tests. Legacy models and
-generated research outputs remain in the original local project.
+Code: [MIT](LICENSE.md). Bundled data:
+[source attribution and terms](inst/extdata/poland/DATA_LICENSE.md).

@@ -1,15 +1,15 @@
 ---
-title: "Methods and validation contract"
+title: "Seasonal models and validation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Methods and validation contract}
+  %\VignetteIndexEntry{Seasonal models and validation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-library(cropyieldmodel)
+library(yieldlag)
 ```
 
 ## Model family
@@ -26,6 +26,7 @@ declared monthly weather vector. Available methods are:
 - `pcr`: training-window principal-component regression plus region effects;
 - `hierarchical`: a global distributed-lag response with regularized regional
   deviations;
+- `stress_lag`: asymmetric weather anomalies and optional matched-month hot-dry interactions;
 - `ensemble`: non-negative, sum-to-one stacking of requested base methods.
 
 Ridge penalties address the short time series relative to monthly terms.
@@ -62,3 +63,19 @@ for a confirmatory claim.
 The package exposes all row-level predictions so users can add blocked
 bootstrap uncertainty, spatial holdouts, and crop-specific diagnostics rather
 than relying only on aggregate scores.
+
+## Nonlinear seasonal response
+
+The stress-lag estimator constructs z = (x - regional monthly mean) / pooled
+within-region standard deviation inside each training window. Its basis contains
+z, max(z - tau, 0), and max(-z - tau, 0). Explicit temperature/precipitation
+labels enable products of upper-temperature and lower-precipitation anomalies
+at matching months. Dimensionless tau is tuned with ridge/smoothing strengths.
+
+Penalties smooth monthly coefficients separately for each variable/basis component.
+Decompositions reproduce the fitted equation; marginal range diagnostics flag
+weather beyond training support. These are statistical diagnostics. Nonlinear
+exposure responses and distributed-lag models are established methods (Schlenker
+and Roberts, 2009, doi:10.1073/pnas.0906865106; Gasparrini et al., 2010,
+doi:10.1002/sim.3940). YieldLag uses a penalized seasonal hinge/product basis,
+rather than daily heat exposure or the full distributed-lag cross-basis formulation.

@@ -1,57 +1,56 @@
-# Validation design and interpretation
+# Validation and interpretation
 
-## Reference split
+## Chronological design
 
-- Initial history: 1999-2005.
-- Hyperparameter and interval calibration: rolling forecasts for 2006-2011.
-- Later evaluation: rolling forecasts for 2012-2018.
-- Final fit: all observed province-years from 1999-2018.
-- Retrospective forecast: 2019 weather, with the 2019 yield withheld from fit.
+Observed years are divided into initial history, tuning, and later evaluation.
+A prediction for year t uses model coefficients and preprocessing fitted to
+observations with years less than t. Hyperparameters are selected from rolling
+tuning scores and remain fixed in later evaluation; coefficients and preprocessing
+are refitted at each later forecast origin. Automatic selection minimizes
+province-year tuning RMSE and does not use evaluation rankings.
 
-For a validation year `t`, every scaler, decomposition, coefficient, residual
-correction, and model fit uses years strictly less than `t`. Hyperparameters
-and ensemble shrinkage are selected before the later evaluation period.
+The stress-lag climatology, anomaly scale, expanded feature scaling, and regional
+effects obey the same training-window rule. Compound mappings are declared by
+the user. The ensemble combines requested base estimators using tuning data.
 
-## Reported metrics
+Tuning errors are reused for hyperparameter/method selection and interval
+calibration. They are not an unbiased independent performance estimate.
+The later block estimates the selected procedure on this dataset and period.
+Once used to guide development, it should be described as a development benchmark.
 
-- RMSE and MAE retain the yield unit (dt/ha).
-- Bias is predicted minus observed.
-- `R2` is predictive R-squared against the evaluation mean and may be negative.
-- `Cor_R2` is squared correlation and does not measure calibration.
-- Coverage and mean width describe the empirically calibrated 80% bands.
+## Diagnostics
 
-Province-year metrics use 112 forecasts (16 provinces x 7 years). These rows
-are correlated within province and year; 112 is not an independent sample
-size. National metrics use seven area-weighted forecasts and are therefore
-highly uncertain.
+RMSE, MAE, and bias retain the response unit. Bias is prediction minus observation.
+Predictive R-squared can be negative; squared correlation does not assess
+calibration. Coverage and width describe empirical prediction bands.
+Province-year observations share years and regions and are correlated.
+Year/block resampling is appropriate when estimating uncertainty for comparisons.
 
-## What the reference result establishes
+Prediction support flags marginal weather extrapolation and unseen regions.
+Its absence does not establish support of every weather combination.
+Decompositions reproduce the fitted equation, not causal or physiological effects.
 
-Historical results demonstrate the workflow on a particular chronological split.
-They do not establish superiority outside Poland, outside a tested crop, after
-2019, or beyond the training climate support. The public example removes the
-supplied unweighted national-mean rows and instead scores national predictions
-against area-weighted observed provincial yields. Historical national metrics
-used another comparator and are not directly comparable to this release.
+## Poland example
 
-## Publication-grade next validation
+With a 2018 training cutoff, the default periods are 1999--2005 initial history,
+2006--2011 tuning, and 2012--2018 evaluation. Weather through 2019 permits a
+retrospective 2019 forecast. National evaluation has seven annual observations.
+The example uses fixed area weights and area-weighted provincial observed yields,
+rather than independently observed national yields or origin-specific annual areas.
 
-Before making a strong standalone-model claim:
+## Synthetic nonlinear example
 
-1. Archive an independent later period not used during method development.
-2. Repeat evaluation for multiple crops and report failures as well as gains.
-3. Use blocked bootstrap or year-level resampling for metric uncertainty.
-4. Assess spatial transfer by holding out complete provinces.
-5. Compare against a naive last-year baseline and suitable published methods.
-6. Test coefficient and ranking sensitivity to tuning-window and grid choices.
-7. Document weather-variable units, aggregation, quality control, and licenses.
+`synthetic_stress_example()` supplies a fully declared deterministic equation
+with asymmetric temperature/precipitation responses and a compound hot-dry term.
+A later-period comparison checks that the estimator can recover this kind of
+nonlinear signal. This controlled result does not demonstrate superiority on
+observed crops or independently validate a new scientific method.
 
-Fixed study area weights are not annual weights available at each forecast
-origin. National aggregation is a retrospective benchmark. Complete harvest-year
-weather also makes the one-year example retrospective, rather than an early
-forecast issued before those weather observations were available.
+## External evaluation
 
-The current 2012-2018 block was not used to select fitted hyperparameters, but
-once its results guide future model redesign it should be regarded as a
-development benchmark. New data are then needed for a genuinely untouched
-confirmatory test.
+A scientific comparison should include untouched later data, spatial holdouts,
+persistence and trend baselines, uncertainty for paired metric differences,
+sensitivity to seasons/grids, and information available at the intended issue date.
+Failures and weak crop targets should be reported alongside gains. Operational
+forecasting requires weather observations or forecasts actually available at
+that date and appropriately time-varying aggregation weights.
