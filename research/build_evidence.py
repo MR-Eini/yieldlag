@@ -64,6 +64,8 @@ summary.to_csv(RESULTS/"combined_metrics.csv")
 def save(name,fig):
     fig.savefig(FIGURES/f"{name}.png",dpi=220,bbox_inches="tight")
     fig.savefig(FIGURES/f"{name}.svg",bbox_inches="tight")
+    svg=FIGURES/f"{name}.svg"
+    svg.write_text("\n".join(line.rstrip() for line in svg.read_text(encoding="utf-8").splitlines())+"\n",encoding="utf-8",newline="\n")
     plt.close(fig)
 
 fig,axes=plt.subplots(2,2,figsize=(12,10),layout="constrained")

@@ -18,4 +18,5 @@ inst/extdata/poland/*.csv -text
 *.svg text eol=lf
 # Public result downloads retain the exact bytes recorded in SHA256SUMS.txt.
 site/downloads/** -text
+research/results/** -text
 inst/extdata/poland/*.csv whitespace=cr-at-eol
