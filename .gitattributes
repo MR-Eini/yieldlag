@@ -11,4 +11,11 @@
 *.dat -text
 inst/extdata/poland/*.csv -text
 *.py text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.svg text eol=lf
+# Public result downloads retain the exact bytes recorded in SHA256SUMS.txt.
+site/downloads/** -text
 inst/extdata/poland/*.csv whitespace=cr-at-eol
