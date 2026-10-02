@@ -1,0 +1,15 @@
+Crop,DisplayName,TargetType,HarvestMonth,SeasonWindow,SeasonRationale
+barley,Barley,crop,6,July-June,Existing reference pre-harvest cutoff
+basic.and.mixed.cereals,Basic and mixed cereals,aggregate,7,August-July,Cereal harvest period
+basic.cereals,Basic cereals,aggregate,7,August-July,Cereal harvest period
+cereals.grand.total,Cereals grand total,aggregate,7,August-July,Cereal harvest period
+mixed.cereals,Mixed cereals,aggregate,7,August-July,Cereal harvest period
+oats,Oats,crop,7,August-July,Typical cereal harvest period
+permanent.meadows,Permanent meadows,forage,6,July-June,Primary cutting period
+permanent.pastures,Permanent pastures,forage,9,October-September,Extended grazing season
+potatoes,Potatoes,crop,9,October-September,Typical harvest period
+rape.and.turnip.rape,Rape and turnip rape,crop,7,August-July,Typical winter-rape harvest period
+rye,Rye,crop,7,August-July,Typical cereal harvest period
+sugar.beets,Sugar beet,crop,10,November-October,Typical harvest period
+triticale,Triticale,crop,7,August-July,Typical cereal harvest period
+wheat,Winter wheat,crop,7,August-July,Confirmed winter-wheat target and harvest period

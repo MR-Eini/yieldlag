@@ -1,0 +1,64 @@
+---
+title: "Methods and validation contract"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Methods and validation contract}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(cropyieldmodel)
+```
+
+## Model family
+
+Let $y_{it}$ be yield in region $i$ and harvest year $t$, and $x_{it}$ the
+declared monthly weather vector. Available methods are:
+
+- `trend`: independent linear trend in each region;
+- `persistence`: the most recent observed yield in each region, providing a
+  hard-to-beat operational baseline;
+- `panel_ridge`: shared weather effects with regularized region intercepts and
+  trends;
+- `local_ridge`: separate regularized weather response in each region;
+- `pcr`: training-window principal-component regression plus region effects;
+- `hierarchical`: a global distributed-lag response with regularized regional
+  deviations;
+- `ensemble`: non-negative, sum-to-one stacking of requested base methods.
+
+Ridge penalties address the short time series relative to monthly terms.
+Optional second-difference penalties smooth consecutive monthly coefficients.
+Supported models use Student-t-style iteratively reweighted fitting and a
+bounded pooled AR(1) correction based only on preceding residuals.
+
+## Validation contract
+
+Years are split chronologically into:
+
+1. initial history;
+2. rolling-origin tuning and interval calibration;
+3. later rolling-origin evaluation.
+
+For a prediction in year $t$, scaling, decomposition, fitting, and residual
+correction use yields strictly before $t$. Hyperparameters are chosen on the
+tuning block. Ensemble shrinkage is chosen by holding out one complete tuning
+year at a time. Automatic method selection minimizes province-year tuning
+RMSE; later evaluation is not used for selection.
+
+The 80% province interval is the 80th percentile of absolute tuning errors.
+National intervals are recalibrated from national tuning errors because
+averaging province intervals would ignore spatial correlation.
+
+## Interpretation limits
+
+Province-year rows share years and regions and are not independent replicates.
+National evaluation often contains very few years. Predictive R-squared may be
+negative and should not be replaced by squared correlation. Once an evaluation
+block has influenced development, a new later or external dataset is required
+for a confirmatory claim.
+
+The package exposes all row-level predictions so users can add blocked
+bootstrap uncertainty, spatial holdouts, and crop-specific diagnostics rather
+than relying only on aggregate scores.

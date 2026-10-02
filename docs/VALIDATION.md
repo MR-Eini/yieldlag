@@ -1,0 +1,57 @@
+# Validation design and interpretation
+
+## Reference split
+
+- Initial history: 1999-2005.
+- Hyperparameter and interval calibration: rolling forecasts for 2006-2011.
+- Later evaluation: rolling forecasts for 2012-2018.
+- Final fit: all observed province-years from 1999-2018.
+- Retrospective forecast: 2019 weather, with the 2019 yield withheld from fit.
+
+For a validation year `t`, every scaler, decomposition, coefficient, residual
+correction, and model fit uses years strictly less than `t`. Hyperparameters
+and ensemble shrinkage are selected before the later evaluation period.
+
+## Reported metrics
+
+- RMSE and MAE retain the yield unit (dt/ha).
+- Bias is predicted minus observed.
+- `R2` is predictive R-squared against the evaluation mean and may be negative.
+- `Cor_R2` is squared correlation and does not measure calibration.
+- Coverage and mean width describe the empirically calibrated 80% bands.
+
+Province-year metrics use 112 forecasts (16 provinces x 7 years). These rows
+are correlated within province and year; 112 is not an independent sample
+size. National metrics use seven area-weighted forecasts and are therefore
+highly uncertain.
+
+## What the reference result establishes
+
+It establishes that, on this particular chronological split, partial pooling
+of monthly weather effects improves over the included trend, ridge, PCR, and
+ensemble alternatives. It does not establish superiority outside Poland,
+outside barley, after 2019, or under climate conditions outside the training
+support.
+
+## Publication-grade next validation
+
+Before making a strong standalone-model claim:
+
+1. Archive an independent later period not used during method development.
+2. Repeat evaluation for multiple crops and report failures as well as gains.
+3. Use blocked bootstrap or year-level resampling for metric uncertainty.
+4. Assess spatial transfer by holding out complete provinces.
+5. Compare against a naive last-year baseline and suitable published methods.
+6. Test coefficient and ranking sensitivity to tuning-window and grid choices.
+7. Document weather-variable units, aggregation, quality control, and licenses.
+
+Fixed study area weights are not annual weights available at each forecast
+origin. National aggregation is a retrospective benchmark. Complete harvest-year
+weather also makes the one-year example retrospective, rather than an early
+forecast issued before those weather observations were available.
+
+The current 2012-2018 block was not used to select fitted hyperparameters, but
+once its results guide future model redesign it should be regarded as a
+development benchmark. New data are then needed for a genuinely untouched
+confirmatory test.
+

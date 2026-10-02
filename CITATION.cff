@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this package, please cite this software release and the related study when using the Poland case study."
+type: software
+title: "cropyieldmodel: Transparent Regional Statistical Crop Yield Modelling"
+authors:
+  - family-names: "Eini"
+    given-names: "Mohammad Reza"
+    alias: "MR-Eini"
+version: "0.1.0"
+date-released: "2026-10-02"
+repository-code: "https://github.com/MR-Eini/cropyieldmodel"
+url: "https://github.com/MR-Eini/cropyieldmodel/releases/tag/v0.1.0"
+license: MIT
+keywords:
+  - crop yield
+  - rolling-origin validation
+  - statistical modelling
+  - R
+references:
+  - type: article
+    title: "Sequential hybridization enhances the reliability of a statistical crop yield model - exemplified by wheat and sugar beet yields in the provinces of Poland"
+    authors:
+      - family-names: "Eini"
+        given-names: "Mohammad Reza"
+      - family-names: "Conradt"
+        given-names: "Tobias"
+      - family-names: "Piniewski"
+        given-names: "Mikołaj"
+    year: 2026
+    journal: "Theoretical and Applied Climatology"
+    doi: "10.1007/s00704-026-06322-8"

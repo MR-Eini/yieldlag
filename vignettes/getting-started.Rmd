@@ -1,0 +1,82 @@
+---
+title: "Getting started with cropyieldmodel"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with cropyieldmodel}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(cropyieldmodel)
+```
+
+`cropyieldmodel` separates data preparation, declared fitting, chronological
+comparison, model selection, and artifact writing. That separation is
+intentional: an in-sample fit is not presented as validation.
+
+## Read the reproducible example
+
+```{r}
+wheat <- read_crop_data(
+  poland_example_path(), crop = "wheat", harvest_month = 7
+)
+wheat
+```
+
+The reader constructs 84 unselected monthly terms: seven declared weather
+variables by twelve months. To use another layout, call `prepare_crop_data()`
+and map the panel columns explicitly.
+
+## Fit a declared model
+
+```{r}
+trend <- fit_crop_model(wheat, method = "trend")
+trend
+head(predict(trend, wheat$panel))
+```
+
+Direct fitting uses fixed settings and intentionally has no calibrated
+prediction interval.
+
+## Compare methods without temporal leakage
+
+The complete workflow below selects hyperparameters in 2006--2011, evaluates
+rolling forecasts in 2012--2018, fits final models through 2018, and predicts
+2019. It is not evaluated while building the vignette because the full grid is
+a substantive model run.
+
+```{r eval=FALSE}
+comparison <- compare_crop_models(
+  wheat,
+  config = crop_model_config(),
+  last_yield_year = 2018,
+  predict_through = 2019
+)
+
+comparison
+summary(comparison)
+plot(comparison, level = "Province-year")
+
+selected <- get_crop_model(comparison)
+predict(
+  selected,
+  wheat$panel[wheat$panel$Year == 2019, ],
+  interval = "prediction"
+)
+```
+
+`get_crop_model(comparison)` returns the method selected by tuning RMSE only.
+It does not select the best-looking method from later evaluation results.
+
+## Export every decision and prediction
+
+```{r eval=FALSE}
+write_crop_results(comparison, "results/wheat", overwrite = FALSE)
+```
+
+The result bundle contains accepted and rejected hyperparameter candidates,
+tuning and evaluation predictions, metrics, final models, configuration in
+text and R formats, input and output checksums, R session information, and a
+plain-language report.

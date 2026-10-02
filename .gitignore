@@ -1,0 +1,20 @@
+# R session files
+.Rhistory
+.RData
+.Ruserdata
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary test and run artifacts
+tests/tmp/
+outputs/tmp/
+.repro-library/
+*.Rcheck/
+*.tar.gz
+outputs/
+release-assets/
+.release-check/
