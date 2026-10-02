@@ -86,7 +86,14 @@ fetch('assets/data/poland.json').then(response=>{
 }).then(data=>{
   runs=data;
   updateCrop(new URLSearchParams(location.search).get('crop')==='wheat'?'wheat':'barley');
+  document.querySelectorAll('select,[data-crop]').forEach(control=>control.disabled=false);
   document.querySelectorAll('[data-crop]').forEach(button=>button.addEventListener('click',()=>updateCrop(button.dataset.crop)));
+  document.querySelectorAll('[data-crop]').forEach(button=>button.addEventListener('keydown',event=>{
+    if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    event.preventDefault();
+    const next=event.key==='Home'?'barley':event.key==='End'?'wheat':crop==='barley'?'wheat':'barley';
+    updateCrop(next);document.querySelector(`[data-crop="${next}"]`).focus();
+  }));
   element('metric-level').addEventListener('change',metrics);
   element('chart-method').addEventListener('change',predictions);
   element('chart-region').addEventListener('change',predictions);

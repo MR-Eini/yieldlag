@@ -239,6 +239,8 @@ def render(crop):
     (downloads / "metadata.json").write_text(json.dumps(metadata, indent=2, ensure_ascii=False)+"\n", encoding="utf-8")
     (downloads / "analysis_config.dput").write_bytes((folder / "analysis_config.dput").read_bytes())
     (downloads / "session_info.txt").write_bytes((folder / "session_info.txt").read_bytes())
+    (downloads / "model_comparison.rds").write_bytes((folder / "public_model_comparison.rds").read_bytes())
+    (downloads / "fitted_models.rds").write_bytes((folder / "fitted_models.rds").read_bytes())
     (downloads / "run_poland_website.R").write_bytes((ROOT / "analysis/run_poland_website.R").read_bytes())
     hashes = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in downloads.iterdir() if p.is_file() and p.name != "SHA256SUMS.txt"}
     (downloads / "SHA256SUMS.txt").write_text("".join(f"{digest}  {name}\n" for name, digest in sorted(hashes.items())), encoding="utf-8")

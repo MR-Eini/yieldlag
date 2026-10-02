@@ -58,6 +58,10 @@ metadata <- list(package = "yieldlag", version = comparison$package_version,
 if (!requireNamespace("jsonlite", quietly = TRUE)) stop("Website export requires jsonlite.")
 jsonlite::write_json(metadata, file.path(output, "metadata.json"),
   auto_unbox = TRUE, pretty = TRUE, digits = 16)
+public_comparison <- comparison
+public_comparison$provenance <- list(type = "bundled_poland", package = "yieldlag",
+  version = "0.2.0", crop = crop, input_checksums = "inst/extdata/poland/input_sha256.csv")
+saveRDS(public_comparison, file.path(output, "public_model_comparison.rds"), version = 3)
 print(comparison)
 print(comparison$metrics)
 cat("Completed:", crop, "\n")
