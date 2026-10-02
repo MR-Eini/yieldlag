@@ -12,6 +12,9 @@ MIT text, GitHub and R citations, a small synthetic example, data attribution
 and preparation hashes, contribution instructions, four platform/R checks, and
 independent temporal-contract tests. It also rejects impossible temporal splits,
 unequal metric vectors, and duplicate national-yield years.
+The supplied national yield rows proved to be unweighted provincial means
+(294 of 294 values). They were removed so the example's national score uses
+area-weighted provincial observations, with no claim of independent national data.
 
 ## Recommended sequence
 

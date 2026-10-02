@@ -50,3 +50,14 @@ test_that("public synthetic example predicts without modifying the random state"
   expect_true(all(is.finite(predict(fitted,
     data$panel[data$panel$Year == 2016, ]))))
 })
+
+test_that("bundled national observations are not unweighted provincial means", {
+  data <- read_crop_data(poland_example_path(), "wheat", 7)
+  expect_equal(nrow(data$national_yields), 0)
+  comparison <- compare_crop_models(data,
+    crop_model_config(methods = "trend"), 2018, 2019, verbose = FALSE)
+  expect_true(all(is.finite(comparison$metrics$RMSE)))
+  national <- comparison$national_cv_predictions
+  expect_true(all(is.na(national$OfficialNationalYield)))
+  expect_true(all(is.finite(national$ObservedWeighted)))
+})

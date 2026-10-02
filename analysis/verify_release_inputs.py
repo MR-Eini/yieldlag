@@ -16,4 +16,9 @@ with (root / "weather_preparation.csv").open(encoding="utf-8", newline="") as st
         actual = hashlib.sha256((root / "weather" / record["File"]).read_bytes()).hexdigest()
         if actual != record["ReleaseSHA256"]:
             raise SystemExit(f"Weather preparation checksum mismatch: {record['File']}")
-print(f"Verified {len(records)} bundled input SHA-256 checksums and weather preparation hashes.")
+with (root / "yield_preparation.csv").open(encoding="utf-8", newline="") as stream:
+    for record in csv.DictReader(stream):
+        actual = hashlib.sha256((root / record["File"]).read_bytes()).hexdigest()
+        if actual != record["ReleaseSHA256"]:
+            raise SystemExit("Yield preparation checksum mismatch")
+print(f"Verified {len(records)} bundled input SHA-256 checksums and preparation hashes.")

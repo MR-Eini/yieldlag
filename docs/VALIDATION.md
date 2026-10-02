@@ -27,11 +27,12 @@ highly uncertain.
 
 ## What the reference result establishes
 
-It establishes that, on this particular chronological split, partial pooling
-of monthly weather effects improves over the included trend, ridge, PCR, and
-ensemble alternatives. It does not establish superiority outside Poland,
-outside barley, after 2019, or under climate conditions outside the training
-support.
+Historical results demonstrate the workflow on a particular chronological split.
+They do not establish superiority outside Poland, outside a tested crop, after
+2019, or beyond the training climate support. The public example removes the
+supplied unweighted national-mean rows and instead scores national predictions
+against area-weighted observed provincial yields. Historical national metrics
+used another comparator and are not directly comparable to this release.
 
 ## Publication-grade next validation
 
@@ -54,4 +55,3 @@ The current 2012-2018 block was not used to select fitted hyperparameters, but
 once its results guide future model redesign it should be regarded as a
 development benchmark. New data are then needed for a genuinely untouched
 confirmatory test.
-

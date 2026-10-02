@@ -105,6 +105,8 @@ This is a statistical framework, not a simulator of physiology, management,
 soil water balance, pests, or phenology. Complete harvest-year weather makes
 these forecasts retrospective. Fixed study area weights also make national
 results a retrospective benchmark, rather than prospective national forecasting.
+Derived unweighted Poland yield rows were removed from the example; its national
+scores use area-weighted observed provincial yields. See the data preparation record.
 
 The evaluation period has already been inspected during development and is
 not an untouched confirmatory test. Province-year errors are correlated, and

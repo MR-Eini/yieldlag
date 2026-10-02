@@ -6,7 +6,7 @@ unique years. Missing yields are permitted for forecast years. Mappings are expl
 
 `read_crop_data()` reads yield.csv, crop_areas.csv, and weather/pl_<region>.dat.
 `poland_example_path()` locates the installed example. RS above 999 represents
-provinces; the named Poland row supplies national observations. Use the in-memory
+provinces. A genuine national observation can be supplied separately. Use the in-memory
 constructor for other schemas.
 
 ## Bundled inputs and processing
@@ -20,6 +20,14 @@ constructor for other schemas.
 - weather_preparation.csv records original/release SHA-256 and the removal of
   unused SPI/SPEI/SMI columns. Seven weather columns and dates are unchanged.
 - input_sha256.csv records every included numeric CSV/DAT input.
+
+The supplied POLAND rows were exactly unweighted provincial means (294 of 294
+crop/year values), not independent national observations. The release removes
+those 21 rows and records source/release hashes in yield_preparation.csv.
+National scoring falls back to area-weighted observed provincial yields.
+Provincial numeric observations were retained. Previously stored national
+metrics from the research directory used a different comparator and should
+not be compared directly to results from this release.
 
 The paper defines SLR as solar radiation, PCP as precipitation, MAX/MIN as
 maximum/minimum temperature, HMD as humidity, DIF as MAX minus MIN, and TAS as

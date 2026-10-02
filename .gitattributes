@@ -10,3 +10,5 @@
 *.pdf binary
 *.dat -text
 inst/extdata/poland/*.csv -text
+*.py text eol=lf
+inst/extdata/poland/*.csv whitespace=cr-at-eol

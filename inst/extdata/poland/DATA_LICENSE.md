@@ -46,8 +46,11 @@ record for each crop column.
 
 Processing: annual region/crop statistics were arranged in CSVs using package
 column names. crop_areas.csv contains fixed study weights rather than annual
-observations; the averaging recipe is unavailable. CSV numeric values were copied
-unchanged. Software then builds seasonal matrices and weighted aggregates.
+observations; the averaging recipe is unavailable. Provincial CSV numeric values
+were copied unchanged. The 21 POLAND rows were removed because all 294 crop/year
+values exactly equalled unweighted provincial means, not independent official
+national observations. Source/release hashes are in yield_preparation.csv.
+Software then builds seasonal matrices and weighted aggregates.
 These derivatives must not be presented as unmodified official GUS products.
 
 ## Related study

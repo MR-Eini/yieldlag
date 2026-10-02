@@ -78,4 +78,3 @@ errors in the tuning period. National intervals are calibrated independently
 from area-weighted national tuning errors; simply averaging provincial bounds
 would ignore spatial error correlation. These are empirical predictive bands,
 not parameter-confidence intervals.
-

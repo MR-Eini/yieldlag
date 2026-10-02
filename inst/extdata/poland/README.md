@@ -6,6 +6,8 @@ terms and provenance gaps. The code MIT license does not apply to provider data.
 Unused drought indices were removed; selected weather values were retained
 verbatim. weather_preparation.csv records preparation; input_sha256.csv records
 numeric inputs. Use `read_crop_data(poland_example_path(), "wheat", 7)`.
+Derived unweighted national-mean rows were removed; yield_preparation.csv
+documents this change. National scoring uses weighted provincial observations.
 
 The package reproduces from supplied monthly tables. A full reconstruction
 from original gridded data remains a documentation task.

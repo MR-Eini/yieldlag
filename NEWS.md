@@ -9,6 +9,9 @@
   duplicated national-yield years before they can silently affect results.
 - Removed unused drought-index columns from the public weather tables and
   recorded original and release SHA-256 hashes.
+- Removed 21 derived Poland yield rows: all 294 crop/year values equalled
+  unweighted provincial means, rather than independent national observations.
+  National scores now use area-weighted observed provincial yields in this example.
 - Added an installable, base-R crop-yield modelling package.
 - Added explicit constructors for directory-based and arbitrary panel data.
 - Added direct fitting and prediction interfaces for six base methods,
