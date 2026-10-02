@@ -20,7 +20,7 @@ remotes::install_github("MR-Eini/cropyieldmodel", ref = "v0.1.0",
 ```
 
 Alternatively, download `cropyieldmodel_0.1.0.tar.gz` from the
-[release page](https://github.com/MR-Eini/cropyieldmodel/releases/tag/v0.1.0):
+[release page](https://github.com/MR-Eini/cropyieldmodel/releases):
 
 ```r
 install.packages("cropyieldmodel_0.1.0.tar.gz", repos = NULL, type = "source")

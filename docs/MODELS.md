@@ -27,6 +27,9 @@ minimum weather-free benchmark and should always be retained in comparisons.
 
 ## Panel ridge
 
+The `persistence` baseline predicts each region's most recent observed yield,
+using only observations preceding the prediction year.
+
 Fits a common 84-term weather response together with regularized province
 intercepts and province trends. This is relatively low variance but assumes
 all provinces share the same weather sensitivities.

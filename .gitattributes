@@ -8,4 +8,5 @@
 *.png binary
 *.rds binary
 *.pdf binary
-
+*.dat -text
+inst/extdata/poland/*.csv -text

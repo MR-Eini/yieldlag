@@ -27,6 +27,8 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
     steps:
       - uses: actions/checkout@v5
+      - name: Verify bundled input checksums
+        run: python analysis/verify_release_inputs.py
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: ${{ matrix.r }}
