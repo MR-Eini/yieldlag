@@ -1,0 +1,186 @@
+{
+  "package": "yieldlag",
+  "version": "0.2.0",
+  "crop": "wheat",
+  "harvest_month": 7,
+  "years": {
+    "initial": [
+      1999,
+      2000,
+      2001,
+      2002,
+      2003,
+      2004,
+      2005
+    ],
+    "tuning": [
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011
+    ],
+    "evaluation": [
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018
+    ]
+  },
+  "selected_method": "local_ridge",
+  "selection_rule": "minimum province-year tuning RMSE",
+  "runtime_seconds": 37.02,
+  "region_count": 16,
+  "weather_terms": 84,
+  "training_yield_count": 320,
+  "held_out_year": 2019,
+  "config": {
+    "methods": [
+      "trend",
+      "persistence",
+      "panel_ridge",
+      "local_ridge",
+      "pcr",
+      "hierarchical",
+      "stress_lag",
+      "ensemble"
+    ],
+    "weather_variables": [
+      "SLR",
+      "PCP",
+      "MAX",
+      "MIN",
+      "HMD",
+      "DIF",
+      "TAS"
+    ],
+    "initial_fraction": 0.35,
+    "tuning_fraction": 0.3,
+    "grids": {
+      "panel_ridge": {
+        "lambda": [
+          1,
+          10,
+          100,
+          1000
+        ],
+        "smooth_ratio": [
+          0,
+          10,
+          100
+        ]
+      },
+      "local_ridge": {
+        "lambda": [
+          10,
+          100,
+          1000
+        ],
+        "smooth_ratio": [
+          0,
+          10,
+          100
+        ]
+      },
+      "pcr": {
+        "components": [
+          3,
+          5,
+          10,
+          15,
+          20
+        ]
+      },
+      "hierarchical": {
+        "lambda_global": [
+          10,
+          100,
+          1000
+        ],
+        "lambda_region": [
+          30,
+          300,
+          3000
+        ],
+        "smooth_ratio": [
+          0,
+          10,
+          100
+        ]
+      },
+      "stress_lag": {
+        "lambda": [
+          10,
+          100,
+          1000
+        ],
+        "smooth_ratio": [
+          0,
+          10
+        ],
+        "threshold": [
+          0.5,
+          1
+        ]
+      },
+      "ensemble": {
+        "shrinkage": [
+          0,
+          1,
+          10,
+          100,
+          1000,
+          10000
+        ]
+      }
+    },
+    "interval_level": 0.8,
+    "robust": true,
+    "stress_temperature": "MAX",
+    "stress_precipitation": "PCP"
+  },
+  "selected_parameters": {
+    "trend": [],
+    "persistence": [],
+    "panel_ridge": {
+      "lambda": 100,
+      "smooth_ratio": 10
+    },
+    "local_ridge": {
+      "lambda": 10,
+      "smooth_ratio": 0
+    },
+    "pcr": {
+      "components": 10
+    },
+    "hierarchical": {
+      "lambda_global": 100,
+      "lambda_region": 30,
+      "smooth_ratio": 0
+    },
+    "stress_lag": {
+      "lambda": 100,
+      "smooth_ratio": 10,
+      "threshold": 0.5,
+      "temperature_variable": "MAX",
+      "precipitation_variable": "PCP"
+    },
+    "ensemble": {
+      "shrinkage": 10000,
+      "trend": 0.13739355320286759,
+      "persistence": 0.11478114451085078,
+      "panel_ridge": 0.14900471985725966,
+      "local_ridge": 0.1564052549665926,
+      "pcr": 0.10711745462202747,
+      "hierarchical": 0.14981878136446325,
+      "stress_lag": 0.18547909147593872
+    }
+  },
+  "data_sha256_manifest": "inst/extdata/poland/input_sha256.csv",
+  "source_tag": "v0.2.0",
+  "source_commit": "29e1674cda4dcffd8b59d011856cf60951e51d45"
+}

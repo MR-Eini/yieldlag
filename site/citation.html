@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Citation, data and license · YieldLag</title><meta name="description" content="YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.">
+<meta name="theme-color" content="#21624d"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css"><script defer src="assets/app.js"></script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.2.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="models.html">Models</a><a href="poland.html">Poland example</a><a href="reference/index.html">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<main id="main"><section class="hero wrap"><span class="eyebrow">Sources & attribution</span><h1>Know what you are using.</h1><p class="lead">Software citation, the provenance of the Poland example, and the distinct terms that accompany code and data.</p></section><div class="wrap content-layout"><aside class="toc" aria-label="On this page"><a href="#software">Software citation</a><a href="#study">Study context</a><a href="#data">Data specification</a><a href="#terms">Data terms</a><a href="#license">Software license</a></aside><article class="prose"><h2 id="software">Cite the software</h2><p>Maintainer and author: <strong>Mohammad Reza Eini</strong>. Use <code>citation("yieldlag")</code> in R.</p><p>Eini, M. R. (2026). <em>YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling</em>. R package version 0.2.0. <a href="https://github.com/MR-Eini/yieldlag">GitHub repository</a>.</p><h2 id="study">Study context</h2><p>The Poland data setting is described by Eini, Conradt, and Piniewski (2026), <em>Theoretical and Applied Climatology</em>, <a href="https://doi.org/10.1007/s00704-026-06322-8">doi:10.1007/s00704-026-06322-8</a>. Website results are newly computed with YieldLag 0.2.0 and its documented comparison procedure; they are not a claim to reproduce the paper’s historical metrics.</p><h2 id="data">Data specification</h2><h3 id="poland-example">Poland example</h3>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Yield</td>
+<td>Provincial crop/aggregate/forage targets, 1999--2019; dt/ha</td>
+</tr>
+<tr>
+<td>Area</td>
+<td>Fixed crop-specific study weights; hectares</td>
+</tr>
+<tr>
+<td>Weather</td>
+<td>Monthly provincial values, 1990--2019</td>
+</tr>
+<tr>
+<td>Seasons</td>
+<td>Target-specific agricultural-year endpoint assumptions</td>
+</tr>
+</tbody>
+</table>
+<p>Crop yields use dt/ha (100 kg/ha). Area-weight averaging periods and detailed
+spatial/monthly weather aggregation lineage are unspecified. Weather working
+conventions are Celsius for MAX/MIN/TAS/DIF, percent for HMD, and monthly mm
+for PCP; these conventions have not been independently verified against source
+grids. SLR denotes solar radiation with an unspecified numeric unit/derivation.
+No automatic unit conversions are applied.</p>
+<p>An agricultural year ending in June uses July--December of the previous year
+and January--June of the harvest year. Seven variables produce 84 monthly terms.
+The manifest records the term/calendar mapping. Incomplete initial seasonal
+windows are omitted; requested cutoffs are validated by the workflow.</p>
+<p>National references are weighted provincial observations, not independent national
+measurements. Fixed areas and full harvest-year weather define a retrospective
+benchmark. Earlier forecasts require inputs available at the intended issue date.</p>
+<p><code>input_sha256.csv</code> records input bytes. Preparation manifests document exclusion
+of unused drought indices and derived unweighted national-mean rows; retained
+provincial and selected weather values are unchanged.</p><h2 id="terms">Data attribution and terms</h2><h2 id="climate">Climate</h2>
+<p>Piniewski, M., Szcześniak, M., Kardel, I., and Berezowski, T. (2020),
+<em>G2DC-PL+: A gridded 2 km daily climate dataset for the union of Polish territory
+and the Vistula and Odra basins</em>, Version 1, 4TU.ResearchData.
+https://doi.org/10.4121/uuid:a3bed3b8-e22a-4b68-8d75-7b87109c9feb.</p>
+<p>The source catalogue identifies CC0 1.0 Universal:
+https://creativecommons.org/publicdomain/zero/1.0/.
+Dataset description: https://doi.org/10.5194/essd-13-1273-2021.</p>
+<p>The example contains monthly voivodeship tables derived for the associated study.
+The source catalogue lists precipitation, minimum/maximum temperature, humidity,
+and wind. The example also contains temperature difference, mean temperature,
+and solar radiation. Full aggregation lineage, solar-radiation derivation/unit,
+and the relationship of these additional columns to the catalogue variables
+are unspecified. Source CC0 metadata alone do not establish that lineage.</p>
+<p>The selected weather values are unchanged; unused drought-index columns were
+excluded. <code>weather_preparation.csv</code> records source and distributed SHA-256 hashes.
+The tables are study derivatives and carry no provider endorsement.</p>
+<h2 id="agricultural-statistics">Agricultural statistics</h2>
+<p>Source: Statistics Poland (GUS / Central Statistical Office of Poland).
+The associated study identifies 1999--2019 yield and cultivation-area statistics
+obtained via https://stat.gov.pl/en/national-census/, last accessed 5 November 2024.</p>
+<p>Reuse terms:
+https://bip.stat.gov.pl/en/contact-with-the-office/reuse-of-public-sector-information/.
+The provider requires attribution, creation/acquisition-time information, and
+a processing description, and is not responsible for processed results.
+Original table identifiers, issue dates, and crop-specific acquisition records
+are unspecified; the access date above is reported by the associated study.</p>
+<p>Processing: provincial values are arranged in crop/year CSV tables with standardized
+column labels. Areas are fixed study weights; their averaging period is unspecified.
+Derived unweighted national-mean rows are excluded. National reference yields
+are computed from provincial observations using the declared area weights.
+<code>yield_preparation.csv</code> records filtering and source/distributed hashes.
+These derivatives should not be represented as unmodified official GUS products.</p>
+<h2 id="study">Study</h2>
+<p>Eini, M. R., Conradt, T., and Piniewski, M. (2026), <em>Sequential hybridization
+enhances the reliability of a statistical crop yield model - exemplified by
+wheat and sugar beet yields in the provinces of Poland</em>, Theoretical and Applied
+Climatology, https://doi.org/10.1007/s00704-026-06322-8.</p>
+<h2 id="software-license">Software license</h2>
+<p>The MIT license applies to software, not to the provider data. Data users
+must retain the attribution and processing information above.</p><h2 id="license">Software license</h2><p>MIT License</p>
+<p>Copyright (c) 2026 Mohammad Reza Eini</p>
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.</p>
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</p></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

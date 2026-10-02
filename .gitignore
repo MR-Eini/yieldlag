@@ -18,3 +18,5 @@ outputs/tmp/
 outputs/
 release-assets/
 .release-check/
+__pycache__/
+*.pyc

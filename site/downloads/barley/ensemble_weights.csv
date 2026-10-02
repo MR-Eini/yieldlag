@@ -1,0 +1,8 @@
+Method,Weight
+trend,0.0
+persistence,0.0
+panel_ridge,0.355055386509659
+local_ridge,0.493601419985592
+pcr,0.0
+hierarchical,0.151343193504749
+stress_lag,0.0

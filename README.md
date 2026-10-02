@@ -5,6 +5,9 @@
 
 **Regional crop-yield modelling from seasonal climate.**
 
+[Documentation website](https://mr-eini.github.io/yieldlag/) ·
+[Poland results and plots](https://mr-eini.github.io/yieldlag/poland.html)
+
 YieldLag fits interpretable statistical models to regional yield and monthly
 weather panels. It combines smooth seasonal responses, regional effects,
 nonlinear weather anomalies, and chronological model comparison.

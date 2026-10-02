@@ -1,0 +1,13 @@
+structure(list(methods = c("trend", "persistence", "panel_ridge", 
+"local_ridge", "pcr", "hierarchical", "stress_lag", "ensemble"
+), weather_variables = c("SLR", "PCP", "MAX", "MIN", "HMD", "DIF", 
+"TAS"), initial_fraction = 0.34999999999999998, tuning_fraction = 0.29999999999999999, 
+    grids = list(panel_ridge = list(lambda = c(1, 10, 100, 1000
+    ), smooth_ratio = c(0, 10, 100)), local_ridge = list(lambda = c(10, 
+    100, 1000), smooth_ratio = c(0, 10, 100)), pcr = list(components = c(3L, 
+    5L, 10L, 15L, 20L)), hierarchical = list(lambda_global = c(10, 
+    100, 1000), lambda_region = c(30, 300, 3000), smooth_ratio = c(0, 
+    10, 100)), stress_lag = list(lambda = c(10, 100, 1000), smooth_ratio = c(0, 
+    10), threshold = c(0.5, 1)), ensemble = list(shrinkage = c(0, 
+    1, 10, 100, 1000, 10000))), interval_level = 0.80000000000000004, 
+    robust = TRUE, stress_temperature = "MAX", stress_precipitation = "PCP"), class = "crop_model_config")

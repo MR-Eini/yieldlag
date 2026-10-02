@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Models and validation · YieldLag</title><meta name="description" content="YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.">
+<meta name="theme-color" content="#21624d"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css"><script defer src="assets/app.js"></script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.2.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="guide.html">Guide</a><a href="models.html" class="active" aria-current="page">Models</a><a href="poland.html">Poland example</a><a href="reference/index.html">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<main id="main"><section class="hero wrap"><span class="eyebrow">Statistical specification</span><h1>Seasonal effects.<br>Explicit assumptions.</h1><p class="lead">The equations, penalties, training rules, and interpretation limits behind every estimator.</p></section><div class="wrap content-layout"><aside class="toc" aria-label="On this page"><a href="#estimators">Estimator overview</a><a href="#shared-estimation">Shared estimation</a><a href="#seasonal-stress-lag-basis">Stress-lag basis</a><a href="#prediction-interpretation">Prediction interpretation</a><a href="#ensemble-and-uncertainty">Ensemble and uncertainty</a><a href="#validation">Validation</a><a href="#references">References</a></aside><article class="prose"><h2 id="estimators">Eight complementary estimators</h2><div class="table-wrap"><table><thead><tr><th>Method</th><th>What it estimates</th></tr></thead><tbody><tr><td><code>trend</code></td><td>Independent regional linear yield trends.</td></tr><tr><td><code>persistence</code></td><td>The latest observed regional yield.</td></tr><tr><td><code>panel_ridge</code></td><td>Shared weather slopes with regional intercepts and trends.</td></tr><tr><td><code>local_ridge</code></td><td>Separate regularized weather slopes within each region.</td></tr><tr><td><code>pcr</code></td><td>Training-window principal components plus regional effects.</td></tr><tr><td><code>hierarchical</code></td><td>Partially pooled regional departures from global seasonal effects.</td></tr><tr><td><code>stress_lag</code></td><td>Linear and asymmetric anomaly responses, with optional hot–dry products.</td></tr><tr><td><code>ensemble</code></td><td>A non-negative, sum-to-one combination of the requested base estimators.</td></tr></tbody></table></div><h2 id="shared-estimation">Shared estimation</h2>
+<p>YieldLag models annual regional yield y_it using a standardized time trend,
+monthly weather terms, and regional effects. Preprocessing and coefficients are
+estimated within each training window. Ridge penalties control coefficient size;
+second-difference penalties smooth consecutive seasonal-month coefficients.
+Robust fitting uses iteratively reweighted Student-t-style residual weights.
+Optional pooled AR(1) correction uses residuals preceding a prediction year.</p>
+<p>Baselines are independent regional trends and last-observation persistence.
+Panel ridge pools weather slopes; local ridge estimates regional slopes; PCR
+estimates training-window principal components; the hierarchical estimator
+partially pools regional deviations around a global seasonal response.</p>
+<h2 id="seasonal-stress-lag-basis">Seasonal stress-lag basis</h2>
+<p>For variable v, seasonal month m, region i, and training set T:</p>
+<pre><code class="language-text">mu_i,v,m = mean_T(x_i,t,v,m)
+s_v,m^2 = sum_T((x_i,t,v,m - mu_i,v,m)^2) / (n_T - number_of_regions)
+z_i,t,v,m = (x_i,t,v,m - mu_i,v,m) / s_v,m
+L(z) = z
+H(z) = max(z - tau, 0)
+D(z) = max(-z - tau, 0)
+C(z_T, z_P) = H(z_T) * D(z_P)
+</code></pre>
+<p>Near-zero scales are replaced by one. For an unseen region, pooled training
+means replace regional means; regional effects are zero. This fallback enables
+computation but requires separate validation of spatial transfer.</p>
+<p>Every declared weather variable receives linear, upper-tail, and lower-tail
+terms. Compound terms are optional and require explicit temperature and
+precipitation variable mappings. They match calendar month and seasonal position.
+A temperature/precipitation pair contributes one product per matched month.
+Tau is positive and expressed in units of within-region weather variability.
+It is not an absolute temperature or physiological threshold.</p>
+<p>Expanded basis columns are centered and scaled within the training set. The
+penalized model is</p>
+<pre><code class="language-text">y_it = intercept + b * standardized_year
+       + regional_intercept_i + regional_trend_i * standardized_year
+       + sum_j(theta_j * standardized_basis_it,j) + error_it
+</code></pre>
+<p>The panel-ridge solver estimates the coefficients. Each variable/basis
+component has its own seasonal second-difference penalty; compound products
+are smoothed as a separate component. A common ridge strength and smoothing
+ratio control all weather components. Regional intercept and trend penalties
+are 0.05 and 0.25 times the weather ridge penalty; the global trend penalty is
+0.05 times that penalty. Lambda, smoothing ratio, and tau are tuned on earlier
+rolling forecasts. Climatology and basis scaling are refitted inside every
+forecast-origin training window.</p>
+<p>The basis captures nonlinear associations in monthly climate. It does not
+reconstruct daily degree-days, physiological stress, phenology, or irrigation.
+The sign of a coefficient is estimated; damage signs are not imposed.</p>
+<h2 id="prediction-interpretation">Prediction interpretation</h2>
+<p><code>explain_crop_prediction()</code> returns contributions for intercept, trend,
+regional effects, linear anomalies, upper/lower tails, hot-dry interaction,
+and AR correction. Their sum reproduces <code>predict()</code> numerically. Centering
+means a tail contribution can be nonzero even when its raw hinge is zero;
+the reference is the training basis mean. These are additive statistical
+components, not causal attribution or measured crop losses.</p>
+<p><code>prediction_support()</code> reports the number of weather terms outside pooled
+training minima/maxima, the maximum absolute standardized anomaly, and unseen
+region status. Marginal ranges do not diagnose every unsupported multivariate
+combination and do not provide a coverage guarantee.</p>
+<h2 id="ensemble-and-uncertainty">Ensemble and uncertainty</h2>
+<p>The ensemble fits non-negative weights summing to one. Shrinkage toward equal
+weighting is tuned by leaving out complete tuning years. Base hyperparameters
+are themselves chosen using the tuning block, so this is not a fully nested
+estimate of model-selection uncertainty. Weights are frozen for later evaluation.</p>
+<p>Prediction interval half-widths are empirical tuning-error quantiles. National
+half-widths are separately calibrated from national tuning errors. The nominal
+80% label describes the calibration target rather than a formal coverage guarantee.</p>
+<h2 id="references">References</h2>
+<ul>
+<li>Schlenker and Roberts (2009), nonlinear weather-yield associations:
+  <a href="https://doi.org/10.1073/pnas.0906865106">Read the study</a>.</li>
+<li>Gasparrini, Armstrong, and Kenward (2010), distributed lag nonlinear models:
+  <a href="https://doi.org/10.1002/sim.3940">Read the study</a>.</li>
+</ul>
+<p>YieldLag implements penalized monthly hinge/product features motivated by these established nonlinear-response and distributed-lag ideas.</p><h2 id="validation">Validation and interpretation</h2><h3 id="chronological-design">Chronological design</h3>
+<p>Observed years are divided into initial history, tuning, and later evaluation.
+A prediction for year t uses model coefficients and preprocessing fitted to
+observations with years less than t. Hyperparameters are selected from rolling
+tuning scores and remain fixed in later evaluation; coefficients and preprocessing
+are refitted at each later forecast origin. Automatic selection minimizes
+province-year tuning RMSE and does not use evaluation rankings.</p>
+<p>The stress-lag climatology, anomaly scale, expanded feature scaling, and regional
+effects obey the same training-window rule. Compound mappings are declared by
+the user. The ensemble combines requested base estimators using tuning data.</p>
+<p>Tuning errors are reused for hyperparameter/method selection and interval
+calibration. They are not an unbiased independent performance estimate.
+The later block estimates the selected procedure on this dataset and period.
+Once used to guide development, it should be described as a development benchmark.</p>
+<h3 id="diagnostics">Diagnostics</h3>
+<p>RMSE, MAE, and bias retain the response unit. Bias is prediction minus observation.
+Predictive R-squared can be negative; squared correlation does not assess
+calibration. Coverage and width describe empirical prediction bands.
+Province-year observations share years and regions and are correlated.
+Year/block resampling is appropriate when estimating uncertainty for comparisons.</p>
+<p>Prediction support flags marginal weather extrapolation and unseen regions.
+Its absence does not establish support of every weather combination.
+Decompositions reproduce the fitted equation, not causal or physiological effects.</p>
+<h3 id="poland-example">Poland example</h3>
+<p>With a 2018 training cutoff, the default periods are 1999--2005 initial history,
+2006--2011 tuning, and 2012--2018 evaluation. Weather through 2019 permits a
+retrospective 2019 forecast. National evaluation has seven annual observations.
+The example uses fixed area weights and area-weighted provincial observed yields,
+rather than independently observed national yields or origin-specific annual areas.</p>
+<h3 id="synthetic-nonlinear-example">Synthetic nonlinear example</h3>
+<p><code>synthetic_stress_example()</code> supplies a fully declared deterministic equation
+with asymmetric temperature/precipitation responses and a compound hot-dry term.
+A later-period comparison checks that the estimator can recover this kind of
+nonlinear signal. This controlled result does not demonstrate superiority on
+observed crops or independently validate a new scientific method.</p>
+<h3 id="external-evaluation">External evaluation</h3>
+<p>A scientific comparison should include untouched later data, spatial holdouts,
+persistence and trend baselines, uncertainty for paired metric differences,
+sensitivity to seasons/grids, and information available at the intended issue date.
+Failures and weak crop targets should be reported alongside gains. Operational
+forecasting requires weather observations or forecasts actually available at
+that date and appropriately time-varying aggregation weights.</p></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

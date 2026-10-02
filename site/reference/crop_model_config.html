@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>crop_model_config · YieldLag</title><meta name="description" content="YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.">
+<meta name="theme-color" content="#21624d"><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><script defer src="../assets/app.js"></script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="../index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.2.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="../index.html">Overview</a><a href="../guide.html">Guide</a><a href="../models.html">Models</a><a href="../poland.html">Poland example</a><a href="../reference/index.html" class="active" aria-current="page">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<main id="main"><div class="wrap content-layout"><aside class="toc"><a href="index.html">← All reference topics</a><a href="../guide.html">User guide</a><a href="../models.html">Model specification</a></aside><article class="prose reference-body">
+
+
+
+<h1 style="font-size:2.8rem">Configure a crop-yield model comparison</h1>
+
+<h3>Description</h3>
+
+<p>Configure a crop-yield model comparison
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>crop_model_config(
+  methods = crop_model_methods(),
+  weather_variables = c("SLR", "PCP", "MAX", "MIN", "HMD", "DIF", "TAS"),
+  initial_fraction = 0.35,
+  tuning_fraction = 0.3,
+  grids = NULL,
+  interval_level = 0.8,
+  robust = TRUE,
+  stress_temperature = NULL,
+  stress_precipitation = NULL
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table role = "presentation">
+<tr><td><code id="methods">methods</code></td>
+<td>
+<p>Character vector. 'persistence' is the last-observation
+benchmark. 'ensemble' is learned from the requested base methods. If it is
+requested alone, all base methods are fitted.</p>
+</td></tr>
+<tr><td><code id="weather_variables">weather_variables</code></td>
+<td>
+<p>Monthly weather variables used when raw files are
+read. Drought indices are not included by default.</p>
+</td></tr>
+<tr><td><code id="initial_fraction">initial_fraction</code></td>
+<td>
+<p>Fraction of observed years assigned to the initial
+history before rolling hyperparameter tuning.</p>
+</td></tr>
+<tr><td><code id="tuning_fraction">tuning_fraction</code></td>
+<td>
+<p>Fraction of observed years assigned to rolling
+tuning and interval calibration. Remaining years form the later
+evaluation block.</p>
+</td></tr>
+<tr><td><code id="grids">grids</code></td>
+<td>
+<p>Named list of hyperparameter grids. 'NULL' uses the documented
+package defaults.</p>
+</td></tr>
+<tr><td><code id="interval_level">interval_level</code></td>
+<td>
+<p>Coverage level for empirical prediction intervals.
+Version 0.2.0 uses 0.80 so interval columns and diagnostics remain
+unambiguous.</p>
+</td></tr>
+<tr><td><code id="robust">robust</code></td>
+<td>
+<p>Whether to use robust iteratively reweighted fitting where
+supported.</p>
+</td></tr>
+<tr><td><code id="stress_temperature">stress_temperature</code>, <code id="stress_precipitation">stress_precipitation</code></td>
+<td>
+<p>Optional weather-variable
+labels for compound hot-dry terms in 'stress_lag'. Specify both or neither.
+Matching calendar months and seasonal positions are required. Thresholds
+are standardized anomalies, not physiological temperature thresholds.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object of class 'crop_model_config'.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>crop_model_config(methods = c("trend", "hierarchical"))
+</code></pre>
+
+<hr><div style="text-align: center;">[Package <em>yieldlag</em> version 0.2.0 ]</div></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="../citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

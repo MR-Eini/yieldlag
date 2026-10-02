@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>prepare_crop_data · YieldLag</title><meta name="description" content="YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.">
+<meta name="theme-color" content="#21624d"><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><script defer src="../assets/app.js"></script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="../index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.2.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="../index.html">Overview</a><a href="../guide.html">Guide</a><a href="../models.html">Models</a><a href="../poland.html">Poland example</a><a href="../reference/index.html" class="active" aria-current="page">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<main id="main"><div class="wrap content-layout"><aside class="toc"><a href="index.html">← All reference topics</a><a href="../guide.html">User guide</a><a href="../models.html">Model specification</a></aside><article class="prose reference-body">
+
+
+
+<h1 style="font-size:2.8rem">Construct crop-yield data from an in-memory panel</h1>
+
+<h3>Description</h3>
+
+<p>This constructor makes the package independent of the Poland file layout.
+Column mappings are explicit; internally they are normalized to 'RS',
+'Year', '.yield', and 'Area'.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>prepare_crop_data(
+  panel,
+  manifest,
+  areas = NULL,
+  national_yields = NULL,
+  region = "RS",
+  year = "Year",
+  yield = ".yield",
+  area_region = region,
+  area = "Area",
+  national_year = "Year",
+  national_yield = "OfficialNationalYield",
+  crop = NA_character_,
+  harvest_month = NA_integer_,
+  weather_variables = NULL,
+  provenance = list(type = "in_memory")
+)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table role = "presentation">
+<tr><td><code id="panel">panel</code></td>
+<td>
+<p>Data frame with one row per region and year plus all terms in
+'manifest'.</p>
+</td></tr>
+<tr><td><code id="manifest">manifest</code></td>
+<td>
+<p>Data frame describing weather terms. It must contain either
+'Term', 'Variable', 'CalendarMonth', 'AgriculturalPosition', or their
+snake-case equivalents.</p>
+</td></tr>
+<tr><td><code id="areas">areas</code></td>
+<td>
+<p>Optional data frame containing one aggregation weight per
+region. If omitted, equal weights are used and this is recorded.</p>
+</td></tr>
+<tr><td><code id="national_yields">national_yields</code></td>
+<td>
+<p>Optional data frame with independently observed
+national yields.</p>
+</td></tr>
+<tr><td><code id="region">region</code>, <code id="year">year</code>, <code id="yield">yield</code></td>
+<td>
+<p>Names of columns in 'panel'.</p>
+</td></tr>
+<tr><td><code id="area_region">area_region</code>, <code id="area">area</code></td>
+<td>
+<p>Names of region and weight columns in 'areas'.</p>
+</td></tr>
+<tr><td><code id="national_year">national_year</code>, <code id="national_yield">national_yield</code></td>
+<td>
+<p>Names of columns in 'national_yields'.</p>
+</td></tr>
+<tr><td><code id="crop">crop</code></td>
+<td>
+<p>Optional crop label.</p>
+</td></tr>
+<tr><td><code id="harvest_month">harvest_month</code></td>
+<td>
+<p>Optional integer from 1 through 12.</p>
+</td></tr>
+<tr><td><code id="weather_variables">weather_variables</code></td>
+<td>
+<p>Optional vector of weather-variable labels.</p>
+</td></tr>
+<tr><td><code id="provenance">provenance</code></td>
+<td>
+<p>Optional named list describing data sources.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object of class 'crop_yield_data'.
+</p>
+
+<hr><div style="text-align: center;">[Package <em>yieldlag</em> version 0.2.0 ]</div></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="../citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

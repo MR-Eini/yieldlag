@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>User guide · YieldLag</title><meta name="description" content="YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.">
+<meta name="theme-color" content="#21624d"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css"><script defer src="assets/app.js"></script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.2.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="index.html">Overview</a><a href="guide.html" class="active" aria-current="page">Guide</a><a href="models.html">Models</a><a href="poland.html">Poland example</a><a href="reference/index.html">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<main id="main"><section class="hero wrap"><span class="eyebrow">From installation to interpretation</span><h1>A complete modelling workflow.</h1><p class="lead">Prepare a regional panel, compare estimators, inspect predictions, and keep the results reproducible.</p></section><div class="wrap content-layout"><aside class="toc" aria-label="On this page"><a href="#install">Install</a><a href="#data">Prepare data</a><a href="#compare">Compare methods</a><a href="#predict">Predict and diagnose</a><a href="#fit">Fit directly</a><a href="#export">Export and reproduce</a><a href="#interpret">Interpret results</a></aside><article class="prose"><h2 id="install">Install</h2>
+<p>The model engine uses R's standard libraries. R 4.2 or later is required.</p>
+<pre><code class="language-r">install.packages(&quot;remotes&quot;)
+remotes::install_github(&quot;MR-Eini/yieldlag&quot;, ref = &quot;v0.2.0&quot;,
+                        build_vignettes = FALSE)
+library(yieldlag)
+</code></pre>
+<p>Alternatively, download <code>yieldlag_0.2.0.tar.gz</code> from <a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">the release</a> and use <code>install.packages(path, repos = NULL, type = "source")</code>. The release archive includes rendered tutorials. The package name is <code>yieldlag</code>.</p>
+<h2 id="data">Prepare data</h2>
+<p>The directory interface reads the bundled study layout:</p>
+<pre><code class="language-r">barley &lt;- read_crop_data(poland_example_path(), &quot;barley&quot;,
+                        harvest_month = 6)
+wheat &lt;- read_crop_data(poland_example_path(), &quot;wheat&quot;,
+                       harvest_month = 7)
+</code></pre>
+<p>The harvest month is the endpoint of a 12-month agricultural window, not a physiological phenology model. Barley uses July–June; wheat uses August–July. Seven variables × twelve months produce 84 terms.</p>
+<p>For your own data, use <code>prepare_crop_data()</code> with one row per region/year, finite weather terms, and yield values or <code>NA</code> for prediction years. Map names explicitly rather than adopting the Poland identifiers.</p>
+<pre><code class="language-r">panel &lt;- data.frame(
+  province = c(&quot;A&quot;, &quot;A&quot;, &quot;B&quot;, &quot;B&quot;),
+  year = c(2020, 2021, 2020, 2021),
+  yield = c(40, 42, 38, 41),
+  temperature_june = c(18, 20, 17, 19),
+  rainfall_june = c(65, 40, 72, 48)
+)
+manifest &lt;- data.frame(
+  Term = c(&quot;temperature_june&quot;, &quot;rainfall_june&quot;),
+  Variable = c(&quot;TMP&quot;, &quot;PCP&quot;),
+  CalendarMonth = c(6, 6), AgriculturalPosition = c(1, 1)
+)
+data &lt;- prepare_crop_data(panel, manifest,
+  region = &quot;province&quot;, year = &quot;year&quot;, yield = &quot;yield&quot;)
+</code></pre>
+<p>This small table illustrates the schema only; a chronological comparison requires at least twelve observed years. Optional positive area weights and independent national observations can also be supplied. Missing area weights produce equal-weight aggregation and this is recorded.</p>
+<h2 id="compare">Compare methods</h2>
+<pre><code class="language-r">config &lt;- crop_model_config(
+  methods = crop_model_methods(),
+  stress_temperature = &quot;MAX&quot;,
+  stress_precipitation = &quot;PCP&quot;,
+  robust = TRUE
+)
+comparison &lt;- compare_crop_models(barley, config,
+  last_yield_year = 2018, predict_through = 2019)
+summary(comparison)
+plot(comparison)
+</code></pre>
+<p>The method is selected by minimum province-year <strong>tuning</strong> RMSE. Later evaluation scores are reported separately. In the website runs, initial history is 1999–2005, tuning is 2006–2011, and evaluation is 2012–2018. At each origin, coefficients and preprocessing are refitted using earlier yields; evaluation-period hyperparameters remain fixed.</p>
+<p><code>last_yield_year</code> controls the final fitting cutoff. Existing 2019 yields remain available as observations for plots, but do not enter fitting or tuning. The 2019 predictions use complete agricultural-year weather, so they are retrospective.</p>
+<p>Choose a subset of methods for a faster comparison. Supply a named <code>grids</code> list to change the tuning candidates; document those choices before interpreting results.</p>
+<h2 id="predict">Predict and diagnose</h2>
+<pre><code class="language-r">selected &lt;- get_crop_model(comparison)
+future &lt;- subset(barley$panel, Year == 2019)
+predict(selected, future, interval = &quot;prediction&quot;)
+prediction_support(selected, future)
+
+stress &lt;- get_crop_model(comparison, &quot;stress_lag&quot;)
+explain_crop_prediction(stress, future)
+coef(stress)
+</code></pre>
+<p>Prediction intervals are empirical 80% bands calibrated from tuning errors. They are available after comparison; direct <code>fit_crop_model()</code> does not independently calibrate them. National bands use national tuning errors rather than averaging provincial interval widths.</p>
+<p><code>prediction_support()</code> counts weather terms outside pooled training ranges and identifies unseen regions. <code>explain_crop_prediction()</code> supports stress-lag models and returns components in the response unit that sum to the prediction. Components are centred relative to training features; they are not causal attribution.</p>
+<h2 id="fit">Fit directly</h2>
+<p>Use fixed parameters when tuning is not required:</p>
+<pre><code class="language-r">fictional &lt;- synthetic_stress_example()
+model &lt;- fit_crop_model(fictional, &quot;stress_lag&quot;,
+  parameters = list(lambda = 1, smooth_ratio = 0,
+    threshold = 0.75, temperature_variable = &quot;TMP&quot;,
+    precipitation_variable = &quot;PCP&quot;), robust = FALSE)
+</code></pre>
+<p>Direct fitting uses all finite responses in the supplied data. Mask or remove future yields first when a forecast-origin cutoff is required. The deterministic example has a declared nonlinear equation and provides a recovery test, not real-crop validation.</p>
+<h2 id="export">Export and reproduce</h2>
+<pre><code class="language-r">write_crop_results(comparison, &quot;results/barley&quot;)
+saveRDS(comparison, &quot;results/barley/comparison.rds&quot;)
+</code></pre>
+<p>Exports include model metrics, row-level rolling and final predictions, candidate tuning scores, selected settings, coefficients, ensemble weights, prediction components, support diagnostics, configuration, fitted objects, plots, session information, and checksums. Existing artifacts require explicit <code>overwrite = TRUE</code>.</p>
+<p>The website calculations can be reproduced with <a href="downloads/barley/run_poland_website.R">run_poland_website.R</a>: install YieldLag 0.2.0 and <code>jsonlite</code>, then run the script from a working directory with <code>Rscript run_poland_website.R barley</code> or <code>Rscript run_poland_website.R wheat</code>. The script uses the published package defaults and enables <code>MAX</code>/<code>PCP</code> compound terms. <a href="poland.html#downloads">Download the result tables</a> to inspect the exact configuration and settings.</p>
+<h2 id="interpret">Interpret results</h2>
+<p>RMSE, MAE and bias retain the yield unit; bias is prediction minus observation. Predictive R² is <code>1 − SSE/SST</code> and can be negative. Squared correlation measures association, not agreement. National scores and provincial scores describe different targets.</p>
+<p>A flexible estimator need not beat a simpler model. The Poland runs show crop-dependent rankings, and tuning selection can differ from the best later-period result. Provincial errors are correlated by region and year; 112 province-years do not represent 112 independent experiments. See <a href="models.html#validation">validation assumptions</a> and <a href="citation.html">data terms</a>.</p></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

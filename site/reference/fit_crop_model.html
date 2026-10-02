@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>fit_crop_model · YieldLag</title><meta name="description" content="YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.">
+<meta name="theme-color" content="#21624d"><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><script defer src="../assets/app.js"></script>
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="../index.html"><svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>YieldLag<span class="version">0.2.0</span></a>
+<button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation"><a href="../index.html">Overview</a><a href="../guide.html">Guide</a><a href="../models.html">Models</a><a href="../poland.html">Poland example</a><a href="../reference/index.html" class="active" aria-current="page">Reference</a><a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
+<main id="main"><div class="wrap content-layout"><aside class="toc"><a href="index.html">← All reference topics</a><a href="../guide.html">User guide</a><a href="../models.html">Model specification</a></aside><article class="prose reference-body">
+
+
+
+<h1 style="font-size:2.8rem">Fit one statistical crop-yield model</h1>
+
+<h3>Description</h3>
+
+<p>This is the direct fitting interface. It does not tune parameters and does
+not estimate a prediction interval, which prevents accidental claims that
+an in-sample fit has been validated. Use [compare_crop_models()] for
+rolling-origin tuning, interval calibration, and later evaluation.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>fit_crop_model(data, method = "hierarchical", parameters = NULL, robust = TRUE)
+</code></pre>
+
+
+<h3>Arguments</h3>
+
+<table role = "presentation">
+<tr><td><code id="data">data</code></td>
+<td>
+<p>A [prepare_crop_data()] or [read_crop_data()] result.</p>
+</td></tr>
+<tr><td><code id="method">method</code></td>
+<td>
+<p>One base method. Ensembles require the comparison workflow.</p>
+</td></tr>
+<tr><td><code id="parameters">parameters</code></td>
+<td>
+<p>Named list of method parameters. 'NULL' uses documented,
+fixed defaults rather than selecting them from the supplied response.
+For 'stress_lag', parameters are 'lambda', 'smooth_ratio', 'threshold',
+and optional 'temperature_variable'/'precipitation_variable' labels.
+Defaults are 100, 10, and 0.75, with compound terms disabled.</p>
+</td></tr>
+<tr><td><code id="robust">robust</code></td>
+<td>
+<p>Whether to use robust fitting where supported.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A 'crop_yield_model' object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre><code class='language-R'>wheat &lt;- read_crop_data(poland_example_path(), "wheat", 7)
+trend &lt;- fit_crop_model(wheat, method = "trend")
+predict(trend, wheat$panel[1:3, ])
+</code></pre>
+
+<hr><div style="text-align: center;">[Package <em>yieldlag</em> version 0.2.0 ]</div></article></div></main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.2.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="../citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.2.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>

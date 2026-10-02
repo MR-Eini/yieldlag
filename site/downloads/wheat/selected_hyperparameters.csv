@@ -1,0 +1,9 @@
+Method,Parameters,PredictiveSigma,IntervalLevel,IntervalHalfWidth,SelectedByTuning
+trend,none,5.05820666138018,0.8,6.84275469313784,False
+persistence,none,5.56710015777215,0.8,7.72,False
+panel_ridge,lambda=100;smooth_ratio=10,4.67005261819589,0.8,6.30520121060278,False
+local_ridge,lambda=10;smooth_ratio=0,4.26202228982722,0.8,5.1239391945064,True
+pcr,components=10,6.01237821585384,0.8,8.03424256553727,False
+hierarchical,lambda_global=100;lambda_region=30;smooth_ratio=0,4.47327002133857,0.8,5.90861972073075,False
+stress_lag,lambda=100;smooth_ratio=10;threshold=0.5;temperature_variable=MAX;precipitation_variable=PCP,4.45501641528647,0.8,6.07116589976381,False
+ensemble,shrinkage=10000;trend=0.137393553202868;persistence=0.114781144510851;panel_ridge=0.14900471985726;local_ridge=0.156405254966593;pcr=0.107117454622027;hierarchical=0.149818781364463;stress_lag=0.185479091475939,4.31136607860315,0.8,5.70106759381662,False
