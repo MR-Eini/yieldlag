@@ -18,7 +18,7 @@ DATA = json.loads((SITE / "assets/data/poland.json").read_text(encoding="utf-8")
 ESC = html.escape
 LOGO = '<svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
 NAV = [("Overview", "index.html"), ("Guide", "guide.html"), ("Models", "models.html"),
-       ("Poland example", "poland.html"), ("Research", "research.html"), ("Reference", "reference/index.html")]
+       ("Poland example", "poland.html"), ("Reference", "reference/index.html")]
 
 def shell(title, body, active, prefix="", description="", scripts=()):
     navigation = ''.join(f'<a href="{prefix}{url}"'+(' class="active" aria-current="page"' if label == active else '')+f'>{label}</a>' for label, url in NAV)

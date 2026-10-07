@@ -3,7 +3,7 @@
   "upload_type": "software",
   "version": "0.3.0",
   "creators": [{"name": "Eini, Mohammad Reza"}],
-  "description": "YieldLag is an R package for regional statistical climate-yield modelling, chronological model comparison, separate interval calibration, seasonal nonlinear responses, prediction decomposition, and paired year-block uncertainty analysis. The software is MIT licensed. Bundled Poland study derivatives retain the source attribution and separate terms in inst/extdata/poland/DATA_LICENSE.md; the MIT license does not apply to provider data. The research scripts retrieve separately licensed external German data and GPL ABSOLUT code without incorporating that code into the R package. Reported studies are retrospective benchmarks and do not establish operational forecast skill, causal effects, or universal model superiority.",
+  "description": "YieldLag is an R package for regional statistical climate-yield modelling, chronological model comparison, separate interval calibration, seasonal nonlinear responses, prediction decomposition, and paired year-block uncertainty analysis. The software is MIT licensed. Bundled Poland example data retain the source attribution and separate terms in inst/extdata/poland/DATA_LICENSE.md; the MIT license does not apply to provider data. The Poland examples are retrospective benchmarks and do not establish operational forecast skill, causal effects, or universal model superiority.",
   "license": "mit",
   "keywords": ["crop yield", "climate", "regional modelling", "chronological validation", "R", "research software"],
   "related_identifiers": [
