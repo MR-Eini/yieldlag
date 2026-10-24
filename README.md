@@ -1,5 +1,9 @@
 # YieldLag
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23619172.svg)](https://doi.org/10.5281/zenodo.23619172)
+
+[Archived releases and DOI](https://doi.org/10.5281/zenodo.23619172).
+
 [![R package check](https://github.com/MR-Eini/yieldlag/actions/workflows/r-tests.yml/badge.svg)](https://github.com/MR-Eini/yieldlag/actions/workflows/r-tests.yml)
 [![Release](https://img.shields.io/github/v/release/MR-Eini/yieldlag)](https://github.com/MR-Eini/yieldlag/releases)
 
@@ -123,6 +127,10 @@ these assumptions and interpretation limits.
 ## Citation and license
 
 Maintainer: **Mohammad Reza Eini**. Use `citation("yieldlag")` to cite the software.
+
+Eini, M. R. (2026). *YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling* [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23619172
+
+Use the version-specific DOI on the Zenodo page when citing a particular release.
 
 The Poland data setting is described by Eini, Conradt, and Piniewski (2026),
 [Theoretical and Applied Climatology](https://doi.org/10.1007/s00704-026-06322-8).

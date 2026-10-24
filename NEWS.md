@@ -1,3 +1,9 @@
+# YieldLag 0.3.2
+
+- Linked the Zenodo archive in the README and the R package citation.
+- Made the package citation use the installed version automatically.
+- Retained the existing modelling implementation and data terms.
+
 # YieldLag 0.3.1
 
 - Prepared the current repository snapshot for archival citation on Zenodo.

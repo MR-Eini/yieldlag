@@ -5,11 +5,12 @@ bibentry(
   title = "YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling",
   author = person("Mohammad Reza", "Eini"),
   year = "2026",
-  note = "R package version 0.3.0",
-  url = "https://github.com/MR-Eini/yieldlag",
+  note = paste("R package version", meta$Version),
+  doi = "10.5281/zenodo.23619172",
+  url = "https://doi.org/10.5281/zenodo.23619172",
   textVersion = paste(
     "Eini MR (2026). YieldLag: Seasonal Climate Responses and Regional",
-    "Crop Yield Modelling. R package version 0.3.0.",
-    "https://github.com/MR-Eini/yieldlag"
+    "Crop Yield Modelling.", paste("R package version", meta$Version),
+    "https://doi.org/10.5281/zenodo.23619172"
   )
 )

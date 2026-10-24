@@ -1,7 +1,7 @@
 {
   "title": "YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling",
   "upload_type": "software",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "creators": [
     {
       "name": "Eini, Mohammad Reza",
@@ -39,4 +39,3 @@
   "access_right": "open",
   "language": "eng"
 }
-
