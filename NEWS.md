@@ -1,3 +1,9 @@
+# YieldLag 0.3.1
+
+- Prepared the current repository snapshot for archival citation on Zenodo.
+- Added the author's ORCID and institutional affiliation to citation metadata.
+- Retained the 0.3.0 modelling implementation and component-specific data terms.
+
 # YieldLag 0.3.0
 
 - Added a separate chronological calibration block through `calibration_years`.

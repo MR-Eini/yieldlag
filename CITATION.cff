@@ -6,10 +6,12 @@ authors:
   - family-names: "Eini"
     given-names: "Mohammad Reza"
     alias: "MR-Eini"
-version: "0.3.0"
-date-released: "2026-10-02"
+    orcid: "https://orcid.org/0000-0002-3323-5952"
+    affiliation: "Faculty of Civil Engineering, Environmental Engineering and Architecture, Warsaw University of Life Sciences - SGGW"
+version: "0.3.1"
+date-released: "2026-10-24"
 repository-code: "https://github.com/MR-Eini/yieldlag"
-url: "https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0"
+url: "https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.1"
 license: MIT
 keywords:
   - crop yield
@@ -29,3 +31,4 @@ references:
     year: 2026
     journal: "Theoretical and Applied Climatology"
     doi: "10.1007/s00704-026-06322-8"
+

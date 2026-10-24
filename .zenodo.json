@@ -1,14 +1,42 @@
 {
   "title": "YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling",
   "upload_type": "software",
-  "version": "0.3.0",
-  "creators": [{"name": "Eini, Mohammad Reza"}],
+  "version": "0.3.1",
+  "creators": [
+    {
+      "name": "Eini, Mohammad Reza",
+      "affiliation": "Faculty of Civil Engineering, Environmental Engineering and Architecture, Warsaw University of Life Sciences - SGGW",
+      "orcid": "0000-0002-3323-5952"
+    }
+  ],
   "description": "YieldLag is an R package for regional statistical climate-yield modelling, chronological model comparison, separate interval calibration, seasonal nonlinear responses, prediction decomposition, and paired year-block uncertainty analysis. The software is MIT licensed. Bundled Poland example data retain the source attribution and separate terms in inst/extdata/poland/DATA_LICENSE.md; the MIT license does not apply to provider data. The Poland examples are retrospective benchmarks and do not establish operational forecast skill, causal effects, or universal model superiority.",
   "license": "mit",
-  "keywords": ["crop yield", "climate", "regional modelling", "chronological validation", "R", "research software"],
+  "keywords": [
+    "crop yield",
+    "climate",
+    "regional modelling",
+    "chronological validation",
+    "R",
+    "research software"
+  ],
   "related_identifiers": [
-    {"identifier": "https://github.com/MR-Eini/yieldlag", "relation": "isSupplementTo", "scheme": "url"},
-    {"identifier": "10.1007/s00704-026-06322-8", "relation": "references", "scheme": "doi"},
-    {"identifier": "10.1007/s00484-022-02356-5", "relation": "references", "scheme": "doi"}
-  ]
+    {
+      "identifier": "https://github.com/MR-Eini/yieldlag",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.1007/s00704-026-06322-8",
+      "relation": "references",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.1007/s00484-022-02356-5",
+      "relation": "references",
+      "scheme": "doi"
+    }
+  ],
+  "access_right": "open",
+  "language": "eng"
 }
+
