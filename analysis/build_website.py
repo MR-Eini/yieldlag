@@ -15,6 +15,7 @@ from plot_poland_website import FIGURES, LABELS
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 VERSION = re.search(r"^Version:\s*(\S+)", (ROOT / "DESCRIPTION").read_text(encoding="utf-8"), re.M)[1]
+VERSION_DOI = "10.5281/zenodo.24441729"
 DATA = json.loads((SITE / "assets/data/poland.json").read_text(encoding="utf-8"))
 ESC = html.escape
 LOGO = '<svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
@@ -40,7 +41,7 @@ def shell(title, body, active, prefix="", description="", scripts=()):
 <header class="site-header"><div class="wrap header-row"><a class="brand" href="{prefix}index.html">{LOGO}YieldLag<span class="version">@VERSION@</span></a>
 <button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation">{navigation}<a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
 <main id="main">{body}</main><footer class="footer"><div class="wrap footer-row"><div>YieldLag @VERSION@ · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="{prefix}citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v@VERSION@">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>'''
-    return page.replace('@VERSION@', VERSION)
+    return page.replace('@VERSION@', VERSION).replace('@VERSION_DOI@', VERSION_DOI)
 
 def write(name, content):
     p = SITE / name
@@ -274,7 +275,7 @@ write_crop_results(comparison, file.path("outputs", "website_poland", crop))</co
         content += f'<div class="actions"><a class="button" href="downloads/{crop}-results.zip">Download complete tables</a><a class="button secondary" href="poland.html">Interactive explorer</a></div><p class="small" style="margin:25px 0">Retrospective benchmark; fixed area weights and complete seasonal weather. National evaluation contains seven annual observations.</p></div>'
         write(crop+'.html', shell('Poland · '+crop.title(),content,'Poland example'))
 
-    citation = '<h2 id="software">Cite the software</h2><p>Maintainer and author: <strong>Mohammad Reza Eini</strong>. Use <code>citation("yieldlag")</code> in R.</p><p>Eini, M. R. (2026). <em>YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling</em> (Version @VERSION@) [Computer software]. See the <a href="https://doi.org/10.5281/zenodo.23619172">Zenodo archive</a> for version-specific citations. Version 0.3.2 is archived at <a href="https://doi.org/10.5281/zenodo.23619333">10.5281/zenodo.23619333</a>.</p><h2 id="study">Publications and applications</h2><p>The Poland data setting is described by Eini, Conradt, and Piniewski (2026), <em>Theoretical and Applied Climatology</em>, <a href="https://doi.org/10.1007/s00704-026-06322-8">doi:10.1007/s00704-026-06322-8</a>. The website presents retrospective benchmarks computed with YieldLag @VERSION@. They do not reproduce the paper’s historical metrics or represent operational forecasts.</p><h2 id="data">Data specification</h2>'
+    citation = '<h2 id="software">Cite the software</h2><p>Maintainer and author: <strong>Mohammad Reza Eini</strong>. Use <code>citation("yieldlag")</code> in R.</p><p>Eini, M. R. (2026). <em>YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling</em> (Version @VERSION@) [Computer software]. Zenodo. <a href="https://doi.org/@VERSION_DOI@">@VERSION_DOI@</a>.</p><p><a href="https://doi.org/10.5281/zenodo.23619172">Archive of all versions</a>. Version 0.3.2 is archived at <a href="https://doi.org/10.5281/zenodo.23619333">10.5281/zenodo.23619333</a>.</p><h2 id="study">Publications and applications</h2><p>The Poland data setting is described by Eini, Conradt, and Piniewski (2026), <em>Theoretical and Applied Climatology</em>, <a href="https://doi.org/10.1007/s00704-026-06322-8">doi:10.1007/s00704-026-06322-8</a>. The website presents retrospective benchmarks computed with YieldLag @VERSION@. They do not reproduce the paper’s historical metrics or represent operational forecasts.</p><h2 id="data">Data specification</h2>'
     data = (ROOT/'docs/DATA.md').read_text(encoding='utf-8')
     data = data[data.index('## Poland example'):].replace('## ','### ')
     data = data[:data.index('[Data attribution]')]

@@ -1,15 +1,23 @@
 citHeader("To cite yieldlag in publications use:")
 
+version <- as.character(meta$Version)
+doi <- unname(c("0.3.2" = "10.5281/zenodo.23619333",
+                "0.3.3" = "10.5281/zenodo.24441729")[version])
+archive <- "https://doi.org/10.5281/zenodo.23619172"
+
 bibentry(
   bibtype = "Manual",
   title = "YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling",
   author = person("Mohammad Reza", "Eini"),
   year = "2026",
-  note = paste("R package version", meta$Version),
-  url = "https://doi.org/10.5281/zenodo.23619172",
+  note = paste("R package version", version),
+  doi = if (!is.na(doi)) doi else NULL,
+  url = if (!is.na(doi)) paste0("https://doi.org/", doi) else archive,
   textVersion = paste(
     "Eini, M. R. (2026). YieldLag: Seasonal Climate Responses and Regional",
-    paste0("Crop Yield Modelling (Version ", meta$Version, ") [Computer software]."),
-    "Zenodo archive: https://doi.org/10.5281/zenodo.23619172"
+    paste0("Crop Yield Modelling (Version ", version, ") [Computer software]."),
+    if (!is.na(doi)) paste0("Zenodo. https://doi.org/", doi) else archive
   )
 )
+
+citFooter(paste("Archive of all versions:", archive))

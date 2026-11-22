@@ -130,7 +130,7 @@ these assumptions and interpretation limits.
 
 Maintainer: **Mohammad Reza Eini**. Use `citation("yieldlag")` to cite the software.
 
-Eini, M. R. (2026). *YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling* (Version 0.3.3) [Computer software].
+Eini, M. R. (2026). *YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling* (Version 0.3.3) [Computer software]. Zenodo. [10.5281/zenodo.24441729](https://doi.org/10.5281/zenodo.24441729)
 
 Use the [Zenodo archive](https://doi.org/10.5281/zenodo.23619172) to find the DOI for the version you used. Version 0.3.2 is archived at [10.5281/zenodo.23619333](https://doi.org/10.5281/zenodo.23619333).
 
