@@ -10,4 +10,5 @@ structure(list(methods = c("trend", "persistence", "panel_ridge",
     10, 100)), stress_lag = list(lambda = c(10, 100, 1000), smooth_ratio = c(0, 
     10), threshold = c(0.5, 1)), ensemble = list(shrinkage = c(0, 
     1, 10, 100, 1000, 10000))), interval_level = 0.80000000000000004, 
-    robust = TRUE, stress_temperature = "MAX", stress_precipitation = "PCP"), class = "crop_model_config")
+    robust = TRUE, stress_temperature = "MAX", stress_precipitation = "PCP", 
+    calibration_years = 0L), class = "crop_model_config")

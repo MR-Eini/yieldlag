@@ -1,12 +1,13 @@
 #!/usr/bin/env Rscript
-# Reproduce the two documented cereal examples using YieldLag 0.2.0.
+# Reproduce the two documented cereal examples using YieldLag 0.3.3.
 # Run from the repository root. Outputs are kept under outputs/website_poland.
 arguments <- commandArgs(trailingOnly = TRUE)
 crop <- if (length(arguments)) arguments[1] else "barley"
 endpoints <- c(barley = 6L, wheat = 7L)
 if (!crop %in% names(endpoints)) stop("Choose barley or wheat.")
 library(yieldlag)
-stopifnot(as.character(packageVersion("yieldlag")) == "0.2.0")
+release_version <- "0.3.3"
+stopifnot(as.character(packageVersion("yieldlag")) == release_version)
 config <- crop_model_config(
   methods = crop_model_methods(),
   stress_temperature = "MAX", stress_precipitation = "PCP",
@@ -17,7 +18,7 @@ data <- read_crop_data(poland_example_path(), crop,
 output <- file.path("outputs", "website_poland", crop)
 if ("--reuse" %in% arguments) {
   comparison <- readRDS(file.path(output, "model_comparison.rds"))
-  stopifnot(comparison$package_version == "0.2.0", comparison$crop == crop,
+  stopifnot(comparison$package_version == release_version, comparison$crop == crop,
     comparison$last_yield_year == 2018L, comparison$predict_through == 2019L,
     identical(comparison$config, config))
 } else {
@@ -54,13 +55,14 @@ metadata <- list(package = "yieldlag", version = comparison$package_version,
   held_out_year = 2019, config = unclass(config),
   selected_parameters = lapply(comparison$results, `[[`, "selected_params"),
   data_sha256_manifest = "inst/extdata/poland/input_sha256.csv",
-  source_tag = "v0.2.0", source_commit = "29e1674cda4dcffd8b59d011856cf60951e51d45")
+  source_tag = paste0("v", release_version),
+  source_commit = Sys.getenv("YIELDLAG_SOURCE_COMMIT", unset = NA_character_))
 if (!requireNamespace("jsonlite", quietly = TRUE)) stop("Website export requires jsonlite.")
 jsonlite::write_json(metadata, file.path(output, "metadata.json"),
   auto_unbox = TRUE, pretty = TRUE, digits = 16)
 public_comparison <- comparison
 public_comparison$provenance <- list(type = "bundled_poland", package = "yieldlag",
-  version = "0.2.0", crop = crop, input_checksums = "inst/extdata/poland/input_sha256.csv")
+  version = release_version, crop = crop, input_checksums = "inst/extdata/poland/input_sha256.csv")
 saveRDS(public_comparison, file.path(output, "public_model_comparison.rds"), version = 3)
 print(comparison)
 print(comparison$metrics)

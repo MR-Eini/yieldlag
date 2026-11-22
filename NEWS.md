@@ -1,3 +1,9 @@
+# YieldLag 0.3.3
+
+- Rebuilt the Poland results, figures and explorer with the current release.
+- Aligned the documentation, package citations and archive metadata.
+- Extended the chronological integrity and input validation tests.
+
 # YieldLag 0.3.2
 
 - Linked the Zenodo archive in the README and the R package citation.

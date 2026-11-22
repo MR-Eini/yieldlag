@@ -1,6 +1,6 @@
 {
   "package": "yieldlag",
-  "version": "0.2.0",
+  "version": "0.3.3",
   "crop": "barley",
   "harvest_month": 6,
   "years": {
@@ -21,6 +21,7 @@
       2010,
       2011
     ],
+    "calibration": [],
     "evaluation": [
       2012,
       2013,
@@ -33,7 +34,7 @@
   },
   "selected_method": "hierarchical",
   "selection_rule": "minimum province-year tuning RMSE",
-  "runtime_seconds": 36.12,
+  "runtime_seconds": 29.68,
   "region_count": 16,
   "weather_terms": 84,
   "training_yield_count": 320,
@@ -141,7 +142,8 @@
     "interval_level": 0.8,
     "robust": true,
     "stress_temperature": "MAX",
-    "stress_precipitation": "PCP"
+    "stress_precipitation": "PCP",
+    "calibration_years": 0
   },
   "selected_parameters": {
     "trend": [],
@@ -181,6 +183,6 @@
     }
   },
   "data_sha256_manifest": "inst/extdata/poland/input_sha256.csv",
-  "source_tag": "v0.2.0",
-  "source_commit": "29e1674cda4dcffd8b59d011856cf60951e51d45"
+  "source_tag": "v0.3.3",
+  "source_commit": null
 }

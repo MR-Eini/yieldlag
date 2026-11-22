@@ -17,6 +17,15 @@ test_that("constructor rejects duplicate keys and non-finite weather", {
   broken <- data$panel
   broken[[data$manifest$Term[1]]][1] <- NA_real_
   expect_error(prepare_crop_data(broken, data$manifest), "must be finite")
+
+  first_term <- data$manifest$Term[1]
+  broken[[first_term]] <- "invalid"
+  expect_warning(
+    expect_error(prepare_crop_data(broken, data$manifest), "must be finite"),
+    "NAs introduced by coercion"
+  )
+  broken[[first_term]] <- NULL
+  expect_error(prepare_crop_data(broken, data$manifest), "panel is missing")
 })
 
 test_that("bundled case-study data rebuild the declared monthly matrix", {

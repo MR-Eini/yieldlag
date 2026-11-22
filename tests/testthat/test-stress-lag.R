@@ -61,6 +61,21 @@ test_that("future weather does not enter stress climatology or tuning", {
     reference$results$stress_lag$final_model$climatology)
 })
 
+test_that("each rolling stress-lag prediction matches an earlier-years-only fit", {
+  data <- synthetic_stress_example()
+  config <- stress_test_config()
+  comparison <- compare_crop_models(data, config, 2030, 2031, verbose = FALSE)
+  result <- comparison$results$stress_lag
+  for (year in comparison$year_split$evaluation) {
+    earlier <- data
+    earlier$panel <- subset(data$panel, Year < year)
+    later <- subset(data$panel, Year == year)
+    model <- fit_crop_model(earlier, "stress_lag", result$selected_params, robust = config$robust)
+    prediction <- subset(result$evaluation_predictions, Year == year)
+    expect_equal(as.numeric(predict(model, later)), prediction$Predicted, tolerance = 1e-8)
+  }
+})
+
 test_that("the nonlinear estimator recovers an independent compound-stress fixture", {
   comparison <- compare_crop_models(synthetic_stress_example(), stress_test_config(),
     2030, 2031, verbose = FALSE)

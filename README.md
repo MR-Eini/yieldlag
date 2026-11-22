@@ -1,6 +1,8 @@
 # YieldLag
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23619172.svg)](https://doi.org/10.5281/zenodo.23619172)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+[![Version 0.3.3](https://img.shields.io/badge/version-0.3.3-blue.svg)](https://github.com/MR-Eini/yieldlag/releases)
 
 [Archived releases and DOI](https://doi.org/10.5281/zenodo.23619172).
 
@@ -22,7 +24,7 @@ Requires R 4.2 or later. Model estimation uses R's standard libraries.
 
 ```r
 install.packages("remotes")
-remotes::install_github("MR-Eini/yieldlag", ref = "v0.3.0",
+remotes::install_github("MR-Eini/yieldlag", ref = "v0.3.3",
                         build_vignettes = FALSE)
 ```
 
@@ -128,9 +130,13 @@ these assumptions and interpretation limits.
 
 Maintainer: **Mohammad Reza Eini**. Use `citation("yieldlag")` to cite the software.
 
-Eini, M. R. (2026). *YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling* [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23619172
+Eini, M. R. (2026). *YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling* (Version 0.3.3) [Computer software].
 
-Use the version-specific DOI on the Zenodo page when citing a particular release.
+Use the [Zenodo archive](https://doi.org/10.5281/zenodo.23619172) to find the DOI for the version you used. Version 0.3.2 is archived at [10.5281/zenodo.23619333](https://doi.org/10.5281/zenodo.23619333).
+
+## Publications and applications
+
+Eini, Conradt and Piniewski (2026), *Theoretical and Applied Climatology*, describes the data context for the Poland example. [DOI](https://doi.org/10.1007/s00704-026-06322-8)
 
 The Poland data setting is described by Eini, Conradt, and Piniewski (2026),
 [Theoretical and Applied Climatology](https://doi.org/10.1007/s00704-026-06322-8).

@@ -14,6 +14,7 @@ from plot_poland_website import FIGURES, LABELS
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
+VERSION = re.search(r"^Version:\s*(\S+)", (ROOT / "DESCRIPTION").read_text(encoding="utf-8"), re.M)[1]
 DATA = json.loads((SITE / "assets/data/poland.json").read_text(encoding="utf-8"))
 ESC = html.escape
 LOGO = '<svg viewBox="0 0 28 36" fill="none" aria-hidden="true"><path d="M14 34V5M14 15C4 15 3 8 3 8C11 8 14 11 14 15ZM14 23C24 23 25 16 25 16C17 16 14 19 14 23ZM14 6C9 0 14 0 14 0C20 0 17 5 14 6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'
@@ -29,16 +30,17 @@ def shell(title, body, active, prefix="", description="", scripts=()):
     for path in scripts:
         data = f' data-results="{asset("assets/data/poland.json")}"' if path == 'assets/poland.js' else ''
         script_tags += f'<script defer src="{asset(path)}"{data}></script>'
-    return f'''<!doctype html>
+    page = f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{ESC(title)} · YieldLag</title><meta name="description" content="{ESC(description or 'YieldLag: seasonal climate responses and regional crop yield modelling. Documentation, models and reproducible Poland results.')}">
 <meta name="theme-color" content="#21624d"><link rel="icon" href="{prefix}assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{asset("assets/style.css")}"><script defer src="{asset("assets/app.js")}"></script>
 {script_tags}</head><body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="wrap header-row"><a class="brand" href="{prefix}index.html">{LOGO}YieldLag<span class="version">0.3.0</span></a>
+<header class="site-header"><div class="wrap header-row"><a class="brand" href="{prefix}index.html">{LOGO}YieldLag<span class="version">@VERSION@</span></a>
 <button class="nav-button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">Menu</button><nav id="main-nav" aria-label="Main navigation">{navigation}<a href="https://github.com/MR-Eini/yieldlag" target="_blank" rel="noopener">GitHub ↗</a></nav></div></header>
-<main id="main">{body}</main><footer class="footer"><div class="wrap footer-row"><div>YieldLag 0.3.0 · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="{prefix}citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>'''
+<main id="main">{body}</main><footer class="footer"><div class="wrap footer-row"><div>YieldLag @VERSION@ · Mohammad Reza Eini<br>Seasonal climate responses and regional crop yield modelling.</div><div><a href="{prefix}citation.html">Citation & data</a><a href="https://github.com/MR-Eini/yieldlag/releases/tag/v@VERSION@">Download</a><a href="https://github.com/MR-Eini/yieldlag/issues">Report an issue</a></div></div></footer></body></html>'''
+    return page.replace('@VERSION@', VERSION)
 
 def write(name, content):
     p = SITE / name
@@ -70,12 +72,14 @@ def figure(name, title, caption, crop="barley"):
     return f'''<figure class="plot-card" id="figure-{name}"><h3>{title}</h3><a data-plot-link="{name}" href="assets/plots/{crop}/{name}.png"><img loading="lazy" data-plot="{name}" src="assets/plots/{crop}/{name}.png" alt="{ESC(title)} for Poland {crop}; {ESC(caption)}"></a><figcaption>{caption}</figcaption><div class="plot-links"><a data-plot-download="{name}:png" href="assets/plots/{crop}/{name}.png" download>Download PNG</a><a data-plot-download="{name}:svg" href="assets/plots/{crop}/{name}.svg" download>Download SVG</a></div></figure>'''
 
 def build():
+    if any(run["metadata"]["version"] != VERSION for run in DATA.values()):
+        raise ValueError("Regenerate the Poland results with the version in DESCRIPTION.")
     write('assets/favicon.svg', '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="#21624d"/><path d="M20 33V7M20 17C10 17 10 10 10 10C17 10 20 13 20 17ZM20 25C30 25 30 18 30 18C23 18 20 21 20 25Z" fill="none" stroke="#faf9f5" stroke-width="2"/></svg>')
     overview = '''<section class="hero wrap hero-grid"><div><span class="eyebrow">An R package for seasonal climate & crop yields</span><h1>Understand the season.<br>Model the yield.</h1><p class="lead">Interpretable regional models that connect monthly weather to crop yield, compare methods chronologically, and explain their predictions.</p><div class="actions"><a class="button" href="guide.html">Get started with R →</a><a class="button secondary" href="poland.html">Explore the Poland results</a></div><p class="small" style="margin-top:22px">R ≥ 4.2 · Standard-library model estimation · MIT code</p></div><div class="hero-art"><span class="eyebrow" style="margin-bottom:18px">Observed data · reproducible comparison</span><img src="assets/plots/barley/model_comparison.png" alt="Barley evaluation RMSE: hierarchical modelling has the lowest provincial and national RMSE."><p>Eight estimators. The same evaluation years.<br>Every score comes from the bundled Poland example.</p></div></section>
 <section class="rule-section"><div class="wrap"><div class="section-head"><h2>From weather panels<br>to interpretable results.</h2><p>A complete statistical workflow: data preparation, model tuning, rolling evaluation, fitting, prediction, and result export.</p></div><div class="grid"><article class="card"><span class="number">01</span><h3>Respect time</h3><p>Preprocessing and coefficients use earlier years at every forecast origin. Tune on an earlier block, then evaluate the procedure on later years.</p></article><article class="card"><span class="number">02</span><h3>Represent seasonal response</h3><p>Compare pooled and regional effects, smooth monthly coefficients, asymmetric weather anomalies, and compound hot–dry interactions.</p></article><article class="card"><span class="number">03</span><h3>Inspect the prediction</h3><p>Break a stress-lag prediction into additive components. Diagnose weather extrapolation, empirical intervals, and regional errors.</p></article></div></div></section>
 <section class="rule-section"><div class="wrap split"><div><span class="eyebrow">A compact R interface</span><h2 style="margin-top:15px">Start with a panel.<br>Keep the evidence.</h2><p>Use bundled inputs or provide your own region/year panel. A comparison object retains tuning candidates, selected settings, row-level predictions, model objects, and diagnostics.</p><a href="reference/index.html">Explore the function reference →</a></div><div><pre><code>install.packages("remotes")
 remotes::install_github("MR-Eini/yieldlag",
-                        ref = "v0.3.0")
+                        ref = "v@VERSION@")
 library(yieldlag)
 
 data &lt;- read_crop_data(
@@ -97,12 +101,12 @@ The model engine uses R's standard libraries. R 4.2 or later is required.
 
 ```r
 install.packages("remotes")
-remotes::install_github("MR-Eini/yieldlag", ref = "v0.3.0",
+remotes::install_github("MR-Eini/yieldlag", ref = "v@VERSION@",
                         build_vignettes = FALSE)
 library(yieldlag)
 ```
 
-Alternatively, download `yieldlag_0.3.0.tar.gz` from [the release](https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.0) and use `install.packages(path, repos = NULL, type = "source")`. The release archive includes rendered tutorials. The package name is `yieldlag`.
+Alternatively, download `yieldlag_@VERSION@.tar.gz` from [the release](https://github.com/MR-Eini/yieldlag/releases/tag/v@VERSION@) and use `install.packages(path, repos = NULL, type = "source")`. The release archive includes rendered tutorials. The package name is `yieldlag`.
 
 ## Prepare data {#data}
 
@@ -199,7 +203,7 @@ saveRDS(comparison, "results/barley/comparison.rds")
 
 Exports include model metrics, row-level rolling and final predictions, candidate tuning scores, selected settings, coefficients, ensemble weights, prediction components, support diagnostics, configuration, fitted objects, plots, session information, and checksums. Existing artifacts require explicit `overwrite = TRUE`.
 
-The website calculations can be reproduced with [run_poland_website.R](downloads/barley/run_poland_website.R): install YieldLag 0.2.0 and `jsonlite`, then run the script from a working directory with `Rscript run_poland_website.R barley` or `Rscript run_poland_website.R wheat`. The script uses the published package defaults and enables `MAX`/`PCP` compound terms. [Download the result tables](poland.html#downloads) to inspect the exact configuration and settings.
+The website calculations can be reproduced with [run_poland_website.R](downloads/barley/run_poland_website.R): install YieldLag @VERSION@ and `jsonlite`, then run the script from a working directory with `Rscript run_poland_website.R barley` or `Rscript run_poland_website.R wheat`. The script uses the published package defaults and enables `MAX`/`PCP` compound terms. [Download the result tables](poland.html#downloads) to inspect the exact configuration and settings.
 
 ## Interpret results {#interpret}
 
@@ -238,8 +242,8 @@ A flexible estimator need not beat a simpler model. The Poland runs show crop-de
     poland += '<section class="rule-section"><div class="wrap"><h2 id="diagnostics">Where do errors occur?</h2><p>Inspect geographic differences, difficult years, and the trade-off between interval width and coverage.</p>'+figure(*FIGURES[4])+figure(*FIGURES[5])+figure(*FIGURES[6])+'</div></section>'
     poland += '<section class="rule-section"><div class="wrap"><h2 id="seasonal">What did the models learn?</h2><p>These figures describe final models fitted through 2018. They are not cross-validated effect estimates, and coefficients or decompositions do not establish causal responses.</p>'+figure(*FIGURES[7])+figure(*FIGURES[8])+figure(*FIGURES[9])+figure(*FIGURES[11])+'</div></section>'
     poland += '<section class="rule-section"><div class="wrap"><h2 id="support">How unusual was the 2019 weather?</h2>'+figure(*FIGURES[10])+'<h3>Selected parameters</h3><div class="table-wrap" id="parameter-table"></div></div></section>'
-    poland += '''<section class="rule-section"><div class="wrap"><h2 id="downloads">Download and reproduce.</h2><div class="download-grid"><article class="card"><h3>Barley results</h3><p>All metric and prediction tables, tuning candidates, selected settings, coefficients, components, diagnostics, configuration, session information, and checksums.</p><a class="button small" href="downloads/barley-results.zip" download>Download ZIP</a> <a href="downloads/barley/metadata.json">Run metadata</a></article><article class="card"><h3>Wheat results</h3><p>The same complete export for wheat, using an agricultural year ending in July and identical evaluation years.</p><a class="button small" href="downloads/wheat-results.zip" download>Download ZIP</a> <a href="downloads/wheat/metadata.json">Run metadata</a></article></div><details><summary>Exact configuration and reproduction</summary><pre><code>install.packages(c("remotes", "jsonlite"))
-remotes::install_github("MR-Eini/yieldlag", ref = "v0.2.0")
+    poland += '''<section class="rule-section"><div class="wrap"><h2 id="downloads">Download and reproduce.</h2><div class="download-grid"><article class="card"><h3>Barley results</h3><p>All metric and prediction tables, tuning candidates, selected settings, coefficients, components, diagnostics, configuration, session information, and checksums.</p><a class="button small" href="downloads/barley-results.zip" download>Download ZIP</a> <a href="downloads/barley/metadata.json">Run metadata</a></article><article class="card"><h3>Wheat results</h3><p>The same complete export for wheat, using an agricultural year ending in July and identical evaluation years.</p><a class="button small" href="downloads/wheat-results.zip" download>Download ZIP</a> <a href="downloads/wheat/metadata.json">Run metadata</a></article></div><details><summary>How these results were produced</summary><pre><code>install.packages(c("remotes", "jsonlite"))
+remotes::install_github("MR-Eini/yieldlag", ref = "v@VERSION@")
 
 # Download run_poland_website.R, then from a terminal:
 # Rscript run_poland_website.R barley
@@ -251,12 +255,16 @@ config &lt;- crop_model_config(
   stress_temperature = "MAX",
   stress_precipitation = "PCP", robust = TRUE
 )
-# Package default grids, initial_fraction = 0.35,
-# tuning_fraction = 0.30, interval_level = 0.80.</code></pre><p><a href="downloads/barley/run_poland_website.R">Download the R script</a>. Package source: v0.2.0, commit <code>29e1674</code>. Both runs retain all 84 terms and fit robustly where supported. Outputs preserve the full tuning grid rather than only its winning row.</p></details><div class="note warning" style="margin-top:25px"><strong>Interpretation limits.</strong> The national reference is constructed from provincial yields and fixed area weights. Monthly weather cannot resolve daily exposure, and solar-radiation units/derivation remain unspecified in the supplied tables. Tuning errors are reused for selection and interval calibration. The seven-year national evaluation is short, and these inspected study data are a development benchmark. Independent later data and issue-date weather inputs are needed for confirmatory or operational claims. <a href="citation.html">Data sources and terms</a>.</div><noscript><p>Interactive controls require JavaScript. All plots and downloadable tables remain available; open the wheat figures through its result files or use <a href="wheat.html">the static wheat report</a>.</p></noscript></div></section>'''
+# Use crop = "barley", harvest_month = 6, or crop = "wheat", harvest_month = 7.
+data &lt;- read_crop_data(poland_example_path(), crop, harvest_month,
+                       weather_variables = config$weather_variables)
+comparison &lt;- compare_crop_models(data, config, last_yield_year = 2018,
+                                  predict_through = 2019)
+write_crop_results(comparison, file.path("outputs", "website_poland", crop))</code></pre><p><a href="downloads/barley/run_poland_website.R">Download the R script</a>. Package source: tag <code>v@VERSION@</code>. Both runs retain all 84 terms and fit robustly where supported. Outputs preserve the full tuning grid rather than only its winning row.</p></details><div class="note warning" style="margin-top:25px"><strong>Interpretation limits.</strong> The national reference is constructed from provincial yields and fixed area weights. Monthly weather cannot resolve daily exposure. Tuning errors are reused for selection and interval calibration. The seven-year national evaluation is short, and these inspected study data are a development benchmark. Independent later data and issue-date weather inputs are needed for confirmatory or operational claims. <a href="citation.html">Data sources and terms</a>.</div><noscript><p>Interactive controls require JavaScript. All plots and downloadable tables remain available; open the wheat figures through its result files or use <a href="wheat.html">the static wheat report</a>.</p></noscript></div></section>'''
     poland = poland.replace('All metric and prediction tables, tuning candidates,', 'Complete fitted model objects, all metric and prediction tables, tuning candidates,')
     poland = poland.replace('The same complete export for wheat,', 'The same complete export, including fitted model objects, for wheat,')
     poland = re.sub(r'(<select id="[^"]+"|<button role="tab")', r'\1 disabled', poland)
-    poland = poland.replace('<details><summary>Exact configuration and reproduction</summary>', '<details><summary>Read the saved model objects</summary><pre><code>library(yieldlag)\ncomparison &lt;- readRDS("barley/model_comparison.rds")\nsummary(comparison)\nmodel &lt;- get_crop_model(comparison)\nfuture &lt;- subset(comparison$prediction_panel, Year == 2019)\npredict(model, future, interval = "prediction")</code></pre><p>The ZIP contains the full comparison and fitted model list. Input provenance uses portable package-relative references.</p></details><details><summary>Exact configuration and reproduction</summary>')
+    poland = poland.replace('<details><summary>How these results were produced</summary>', '<details><summary>Read the saved model objects</summary><pre><code>library(yieldlag)\ncomparison &lt;- readRDS("barley/model_comparison.rds")\nsummary(comparison)\nmodel &lt;- get_crop_model(comparison)\nfuture &lt;- subset(comparison$prediction_panel, Year == 2019)\npredict(model, future, interval = "prediction")</code></pre><p>The ZIP contains the full comparison and fitted model list. Input provenance uses portable package-relative references.</p></details><details><summary>How these results were produced</summary>')
     write('poland.html', shell('Poland results', poland, 'Poland example', scripts=('assets/poland.js',)))
     # Complete static alternatives make all results accessible without JavaScript.
     for crop in ['barley','wheat']:
@@ -266,7 +274,7 @@ config &lt;- crop_model_config(
         content += f'<div class="actions"><a class="button" href="downloads/{crop}-results.zip">Download complete tables</a><a class="button secondary" href="poland.html">Interactive explorer</a></div><p class="small" style="margin:25px 0">Retrospective benchmark; fixed area weights and complete seasonal weather. National evaluation contains seven annual observations.</p></div>'
         write(crop+'.html', shell('Poland · '+crop.title(),content,'Poland example'))
 
-    citation = '<h2 id="software">Cite the software</h2><p>Maintainer and author: <strong>Mohammad Reza Eini</strong>. Use <code>citation("yieldlag")</code> in R.</p><p>Eini, M. R. (2026). <em>YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling</em>. R package version 0.3.0. <a href="https://github.com/MR-Eini/yieldlag">GitHub repository</a>.</p><h2 id="study">Study context</h2><p>The Poland data setting is described by Eini, Conradt, and Piniewski (2026), <em>Theoretical and Applied Climatology</em>, <a href="https://doi.org/10.1007/s00704-026-06322-8">doi:10.1007/s00704-026-06322-8</a>. Website results are newly computed with YieldLag 0.2.0 and its documented comparison procedure; they are not a claim to reproduce the paper’s historical metrics.</p><h2 id="data">Data specification</h2>'
+    citation = '<h2 id="software">Cite the software</h2><p>Maintainer and author: <strong>Mohammad Reza Eini</strong>. Use <code>citation("yieldlag")</code> in R.</p><p>Eini, M. R. (2026). <em>YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling</em> (Version @VERSION@) [Computer software]. See the <a href="https://doi.org/10.5281/zenodo.23619172">Zenodo archive</a> for version-specific citations. Version 0.3.2 is archived at <a href="https://doi.org/10.5281/zenodo.23619333">10.5281/zenodo.23619333</a>.</p><h2 id="study">Publications and applications</h2><p>The Poland data setting is described by Eini, Conradt, and Piniewski (2026), <em>Theoretical and Applied Climatology</em>, <a href="https://doi.org/10.1007/s00704-026-06322-8">doi:10.1007/s00704-026-06322-8</a>. The website presents retrospective benchmarks computed with YieldLag @VERSION@. They do not reproduce the paper’s historical metrics or represent operational forecasts.</p><h2 id="data">Data specification</h2>'
     data = (ROOT/'docs/DATA.md').read_text(encoding='utf-8')
     data = data[data.index('## Poland example'):].replace('## ','### ')
     data = data[:data.index('[Data attribution]')]
@@ -284,11 +292,12 @@ config &lt;- crop_model_config(
         # Replace package links and link standard R topics to the R manuals.
         main = re.sub(r'href="(?:\.\./)+([^/]+)/html/([^"#]+)"', r'href="https://stat.ethz.ch/R-manual/R-release/library/\1/html/\2"', main)
         main = re.sub(r'<table style="width: 100%;">.*?</table>', '', main, count=1, flags=re.S)
+        main = main.replace('href="00Index.html"', 'href="index.html"')
         main = main.replace('<h2>', '<h1 style="font-size:2.8rem">',1).replace('</h2>','</h1>',1)
         topics.append((source.stem,title))
         content = '<div class="wrap content-layout"><aside class="toc"><a href="index.html">← All reference topics</a><a href="../guide.html">User guide</a><a href="../models.html">Model specification</a></aside><article class="prose reference-body">'+main+'</article></div>'
         write('reference/'+source.name, shell(source.stem, content, 'Reference', prefix='../'))
-    reference = hero('Function-level documentation', 'The R reference.', 'Arguments, return values, and examples generated from the help files shipped with YieldLag 0.3.0.')
+    reference = hero('Function-level documentation', 'The R reference.', 'Arguments, return values, and examples generated from the help files shipped with YieldLag @VERSION@.')
     reference += '<div class="wrap" style="padding-bottom:70px"><label for="api-search" class="eyebrow">Find a function or topic</label><input id="api-search" type="search" placeholder="Search predictions, data, models…" style="width:min(600px,100%);margin-top:12px"><span id="api-count" class="small" role="status" style="display:block;margin:10px 0">'+str(len(topics))+' topics</span><div class="api-list">'
     reference += ''.join(f'<article class="api-item"><a href="{name}.html">{name}</a><p>{title}</p></article>' for name,title in topics)
     reference += '</div></div>'
