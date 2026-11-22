@@ -26,12 +26,10 @@ interface for other layouts. `poland_example_path()` locates installed example i
 | Weather | Monthly provincial values, 1990--2019 |
 | Seasons | Target-specific agricultural-year endpoint assumptions |
 
-Crop yields use dt/ha (100 kg/ha). Area-weight averaging periods and detailed
-spatial/monthly weather aggregation lineage are unspecified. Weather working
-conventions are Celsius for MAX/MIN/TAS/DIF, percent for HMD, and monthly mm
-for PCP; these conventions have not been independently verified against source
-grids. SLR denotes solar radiation with an unspecified numeric unit/derivation.
-No automatic unit conversions are applied.
+Crop yields use dt/ha (100 kg/ha). The bundled model uses the weather values
+as supplied, without unit conversions. The supplied inputs do not document
+the fixed-area averaging period, GUS table identifiers, grid-to-province
+aggregation, sources of DIF/TAS/SLR, or SLR units and derivation.
 
 An agricultural year ending in June uses July--December of the previous year
 and January--June of the harvest year. Seven variables produce 84 monthly terms.

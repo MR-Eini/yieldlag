@@ -6,11 +6,10 @@ bibentry(
   author = person("Mohammad Reza", "Eini"),
   year = "2026",
   note = paste("R package version", meta$Version),
-  doi = "10.5281/zenodo.23619172",
   url = "https://doi.org/10.5281/zenodo.23619172",
   textVersion = paste(
-    "Eini MR (2026). YieldLag: Seasonal Climate Responses and Regional",
-    "Crop Yield Modelling.", paste("R package version", meta$Version),
-    "https://doi.org/10.5281/zenodo.23619172"
+    "Eini, M. R. (2026). YieldLag: Seasonal Climate Responses and Regional",
+    paste0("Crop Yield Modelling (Version ", meta$Version, ") [Computer software]."),
+    "Zenodo archive: https://doi.org/10.5281/zenodo.23619172"
   )
 )

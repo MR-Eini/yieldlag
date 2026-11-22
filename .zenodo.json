@@ -1,11 +1,11 @@
 {
   "title": "YieldLag: Seasonal Climate Responses and Regional Crop Yield Modelling",
   "upload_type": "software",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "creators": [
     {
       "name": "Eini, Mohammad Reza",
-      "affiliation": "Faculty of Civil Engineering, Environmental Engineering and Architecture, Warsaw University of Life Sciences - SGGW",
+      "affiliation": "Warsaw University of Life Sciences – SGGW",
       "orcid": "0000-0002-3323-5952"
     }
   ],

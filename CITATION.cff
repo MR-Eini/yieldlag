@@ -7,17 +7,22 @@ authors:
     given-names: "Mohammad Reza"
     alias: "MR-Eini"
     orcid: "https://orcid.org/0000-0002-3323-5952"
-    affiliation: "Faculty of Civil Engineering, Environmental Engineering and Architecture, Warsaw University of Life Sciences - SGGW"
-version: "0.3.2"
-date-released: "2026-10-24"
+    affiliation: "Warsaw University of Life Sciences – SGGW"
+version: "0.3.3"
 repository-code: "https://github.com/MR-Eini/yieldlag"
-url: "https://github.com/MR-Eini/yieldlag/releases/tag/v0.3.2"
+url: "https://mr-eini.github.io/yieldlag/"
 license: MIT
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23619172"
+    description: "Zenodo concept DOI for all versions"
 keywords:
   - crop yield
-  - rolling-origin validation
-  - statistical modelling
+  - climate
+  - regional modelling
+  - chronological validation
   - R
+  - research software
 references:
   - type: article
     title: "Sequential hybridization enhances the reliability of a statistical crop yield model - exemplified by wheat and sugar beet yields in the provinces of Poland"
@@ -32,3 +37,11 @@ references:
     journal: "Theoretical and Applied Climatology"
     doi: "10.1007/s00704-026-06322-8"
 
+  - type: article
+    title: "Choosing multiple linear regressions for weather-based crop yield prediction with ABSOLUT v1.2 applied to the districts of Germany"
+    authors:
+      - family-names: "Conradt"
+        given-names: "Tobias"
+    year: 2022
+    journal: "International Journal of Biometeorology"
+    doi: "10.1007/s00484-022-02356-5"
